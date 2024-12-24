@@ -39,12 +39,15 @@ namespace microcontrollerSide
 
                 byte[] recognitionBytes = Encoding.UTF8.GetBytes("Esp");
                 Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
+                Thread.Sleep(200);
                 Conn.Send(recognitionBytes);
 
 
                 byte[] roomCode = new byte[1024];
                 int length = Conn.Receive(roomCode);
+                ControlletNameLabel.Text += length;
                 string gg = Encoding.UTF8.GetString(roomCode, 0, length);
+
                 int incomingmassegeLength = int.Parse(gg);
                 roomCode = new byte[incomingmassegeLength];
                 Conn.Receive(roomCode);
