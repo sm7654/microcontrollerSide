@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServerSide;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -30,21 +31,52 @@ namespace microcontrollerSide
             UI = form;
             UI.GetLabel().Text = code;
         }
+
+
+
+
+
+
+
         public void ListenTo200Code()
         {
-            byte[] bytes = new byte[1024];
-            int bytesRead = controller.Receive(bytes);
-            string returnCode = Encoding.UTF8.GetString(bytes, 0, bytesRead);
-
-            if (returnCode == "200")
+            try
             {
-                UI.BeginInvoke(new Action(() =>
-                {
-                    UI.CLientIsOnline();
-                }));
+                byte[] bytes = new byte[1024];
+                int bytesRead = controller.Receive(bytes);
+                byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes,0,bytesRead))];
+                controller.Receive(bytes1);
+                string[] Status = RsaEncryption.Decrypt(bytes1).Split(';');
 
-                return;
+
+                string returnCode = Status[0];
+
+
+                if (returnCode == "200")
+                {
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UI.CLientIsOnline();
+                        UserStatus Control = new UserStatus(true);
+                        Control.SetRemoteEndPoint(Status[0]);
+                        UI.GetDialogPanel().Controls.Add(Control);
+
+                    }));
+
+                    return;
+                } else if (returnCode == "Shut")
+                {
+
+
+                    controller.Close();
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UI.Close();
+                        ClosingController.btnExit_Click();
+                    }));
+                }
             }
+            catch (Exception e) { controller.Close(); }
         }
 
     }

@@ -1,4 +1,6 @@
-﻿namespace microcontrollerSide
+﻿using ServerSide;
+
+namespace microcontrollerSide
 {
     partial class Form1
     {
@@ -50,7 +52,7 @@
             // ControlletNameLabel
             // 
             this.ControlletNameLabel.AutoSize = true;
-            this.ControlletNameLabel.Location = new System.Drawing.Point(334, 94);
+            this.ControlletNameLabel.Location = new System.Drawing.Point(330, 94);
             this.ControlletNameLabel.Name = "ControlletNameLabel";
             this.ControlletNameLabel.Size = new System.Drawing.Size(50, 13);
             this.ControlletNameLabel.TabIndex = 2;
@@ -58,7 +60,7 @@
             // 
             // ConnectButton
             // 
-            this.ConnectButton.Location = new System.Drawing.Point(374, 286);
+            this.ConnectButton.Location = new System.Drawing.Point(375, 343);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(75, 23);
             this.ConnectButton.TabIndex = 3;

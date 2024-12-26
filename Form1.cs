@@ -29,48 +29,57 @@ namespace microcontrollerSide
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            (bool status, Socket Conn) = CreateConn();
+            if (ControllerName.Text == "")
+                return;
 
-
-            if (status)
+            new Thread(() =>
             {
-
-                // generate keys and returns the public key and send it do server
-
-                byte[] recognitionBytes = Encoding.UTF8.GetBytes("Esp");
-                Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
-                Thread.Sleep(200);
-                Conn.Send(recognitionBytes);
+                (bool status, Socket Conn) = CreateConn();
 
 
-                byte[] roomCode = new byte[1024];
-                int length = Conn.Receive(roomCode);
-                ControlletNameLabel.Text += length;
-                string gg = Encoding.UTF8.GetString(roomCode, 0, length);
-
-                int incomingmassegeLength = int.Parse(gg);
-                roomCode = new byte[incomingmassegeLength];
-                Conn.Receive(roomCode);
-
-                string Code = "";
-                if (length > 0)
+                if (status)
                 {
-                    Code = RsaEncryption.Decrypt(roomCode).Split(' ')[1];
+
+                    // generate keys and returns the public key and send it do server
+
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp;{ControllerName.Text}"));
+
+                    Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
+                    Thread.Sleep(200);
+                    Conn.Send(recognitionBytes);
+
+
+                    byte[] roomCode = new byte[1024];
+                    int length = Conn.Receive(roomCode);
+                    string gg = Encoding.UTF8.GetString(roomCode, 0, length);
+                    int incomingmassegeLength = int.Parse(gg);
+                    roomCode = new byte[incomingmassegeLength];
+                    Conn.Receive(roomCode);
+
+
+                    string Code = "";
+                    if (length > 0)
+                    {
+                        Code = RsaEncryption.Decrypt(roomCode).Split(' ')[1];
+                    }
+
+
+                    MicroController temp = new MicroController(Conn, Code);
+                    CommunicaionForm communicaionForm = new CommunicaionForm(temp);
+                    temp.setUI(communicaionForm);
+
+                    this.BeginInvoke(new Action(() => {
+                        this.Hide();
+                        communicaionForm.Show();
+
+                    }));
+                    
+
+
+
                 }
-
-
-                MicroController temp = new MicroController(Conn, Code);
-                CommunicaionForm communicaionForm = new CommunicaionForm(temp);
-                temp.setUI(communicaionForm);
-
-
-                this.Hide();
-                communicaionForm.Show();
-
-
-
-
-            }
+            }).Start();
+            
         }
 
 
@@ -89,18 +98,23 @@ namespace microcontrollerSide
 
                 Conn.Connect(address);
 
-
+                
                 Conn.Send(RsaEncryption.GenerateKeys());
 
 
+                byte[] ServerpublicKey = new byte[10240];
+                int bytesRec = Conn.Receive(ServerpublicKey);
 
-                
+                RsaEncryption.SetServerPublicKey(Encoding.UTF8.GetString(ServerpublicKey, 0, bytesRec));
+
+
                 // recive code
 
                 return (true, Conn);
             }
             catch (SocketException error)
             {
+                ControlletNameLabel.Text += "error";
                 return (false, null);
             }
         }

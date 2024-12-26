@@ -69,6 +69,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RsaEncryption.cs" />
+    <Compile Include="UserStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserStatus.Designer.cs">
+      <DependentUpon>UserStatus.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ClientWaitingForm.resx">
       <DependentUpon>ClientWaitingForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -87,6 +93,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserStatus.resx">
+      <DependentUpon>UserStatus.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

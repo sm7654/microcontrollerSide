@@ -57,5 +57,10 @@ namespace microcontrollerSide
         {
 
         }
+
+        private void RoomCodeLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
