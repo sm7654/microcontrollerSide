@@ -52,6 +52,7 @@ namespace microcontrollerSide
         {
             return this.CLientOnline;
         }
+      
 
         private void IsCLientConnectedLabel_Click(object sender, EventArgs e)
         {

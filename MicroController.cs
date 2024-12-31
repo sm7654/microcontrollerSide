@@ -13,11 +13,15 @@ namespace microcontrollerSide
     {
         private static Socket controller;
         private static string code;
+        private static byte[] EncryptedToServerCode;
+        private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
         public MicroController(Socket controllerSock, string Roomcode)
         {
             controller = controllerSock;
             code = Roomcode;
+            EncryptedToServerCode = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes(code));
+            ClientVideoRequest = false;
             new Thread(() => ListenTo200Code()).Start();
             //this.form.GetroomCodeLabel().Text = "RoomCode: " + code;
         }
@@ -30,6 +34,23 @@ namespace microcontrollerSide
         {
             UI = form;
             UI.GetLabel().Text = code;
+        }
+
+
+
+
+
+        public void VideoCasting()
+        {
+            /*
+             while (ClientVideoRequest){
+                var source = Camera output;
+                byte[] videobyte = sourse.getVideo(2048); get 2048 chunks of video bytes
+                videobyte = AES.encrypt(videobytes);
+                byte[] FullyEncryptedVideo = EncryptedToServerCode + videobytes;
+                UdpServer.SendTo(FullyEncryptedVideo, (serverIP, 64000) );
+             }
+             */
         }
 
 
@@ -78,6 +99,9 @@ namespace microcontrollerSide
             }
             catch (Exception e) { controller.Close(); }
         }
+
+
+
 
     }
 }
