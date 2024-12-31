@@ -58,7 +58,7 @@ namespace microcontrollerSide
                     {
                         UI.CLientIsOnline();
                         UserStatus Control = new UserStatus(true);
-                        Control.SetRemoteEndPoint(Status[0]);
+                        Control.SetRemoteEndPoint(Status[1]);
                         UI.GetDialogPanel().Controls.Add(Control);
 
                     }));

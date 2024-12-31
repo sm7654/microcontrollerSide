@@ -26,6 +26,7 @@ namespace microcontrollerSide
         public void SetRemoteEndPoint(string EN)
         {
             RemoteEndPoint = EN;
+            ClientEndPointLael.Text = RemoteEndPoint;
         }
 
 
