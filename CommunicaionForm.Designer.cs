@@ -91,7 +91,7 @@ namespace microcontrollerSide
             // RoomCodeLabel
             // 
             this.RoomCodeLabel.AutoSize = true;
-            this.RoomCodeLabel.Location = new System.Drawing.Point(865, 19);
+            this.RoomCodeLabel.Location = new System.Drawing.Point(942, 26);
             this.RoomCodeLabel.Name = "RoomCodeLabel";
             this.RoomCodeLabel.Size = new System.Drawing.Size(63, 13);
             this.RoomCodeLabel.TabIndex = 5;

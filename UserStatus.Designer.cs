@@ -32,9 +32,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.UserConnectedStatus = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.UserConectivityLabel = new System.Windows.Forms.Label();
-            this.ClientEndPointLael = new System.Windows.Forms.Label();
             this.TimeLabel = new System.Windows.Forms.Label();
+            this.ClientEndPointLael = new System.Windows.Forms.Label();
+            this.UserConectivityLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -74,7 +74,7 @@
             this.UserConnectedStatus.Location = new System.Drawing.Point(0, 0);
             this.UserConnectedStatus.Margin = new System.Windows.Forms.Padding(0);
             this.UserConnectedStatus.Name = "UserConnectedStatus";
-            this.UserConnectedStatus.Size = new System.Drawing.Size(15, 49);
+            this.UserConnectedStatus.Size = new System.Drawing.Size(14, 49);
             this.UserConnectedStatus.TabIndex = 0;
             // 
             // panel2
@@ -84,25 +84,25 @@
             this.panel2.Controls.Add(this.ClientEndPointLael);
             this.panel2.Controls.Add(this.UserConectivityLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(15, 0);
+            this.panel2.Location = new System.Drawing.Point(14, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(820, 49);
+            this.panel2.Size = new System.Drawing.Size(821, 49);
             this.panel2.TabIndex = 1;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // UserConectivityLabel
+            // TimeLabel
             // 
-            this.UserConectivityLabel.AutoSize = true;
-            this.UserConectivityLabel.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UserConectivityLabel.Location = new System.Drawing.Point(3, 1);
-            this.UserConectivityLabel.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
-            this.UserConectivityLabel.Name = "UserConectivityLabel";
-            this.UserConectivityLabel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
-            this.UserConectivityLabel.Size = new System.Drawing.Size(135, 22);
-            this.UserConectivityLabel.TabIndex = 0;
-            this.UserConectivityLabel.Text = "Client Connected";
-            this.UserConectivityLabel.Click += new System.EventHandler(this.UserConectivityLabel_Click);
+            this.TimeLabel.AutoSize = true;
+            this.TimeLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.TimeLabel.Font = new System.Drawing.Font("Myanmar Text", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.TimeLabel.Location = new System.Drawing.Point(734, 0);
+            this.TimeLabel.Name = "TimeLabel";
+            this.TimeLabel.Padding = new System.Windows.Forms.Padding(0, 28, 0, 0);
+            this.TimeLabel.Size = new System.Drawing.Size(87, 48);
+            this.TimeLabel.TabIndex = 2;
+            this.TimeLabel.Text = "10.2.2024 10:14";
             // 
             // ClientEndPointLael
             // 
@@ -117,18 +117,18 @@
             this.ClientEndPointLael.TabIndex = 1;
             this.ClientEndPointLael.Text = "10.0.0.13:59847";
             // 
-            // TimeLabel
+            // UserConectivityLabel
             // 
-            this.TimeLabel.AutoSize = true;
-            this.TimeLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.TimeLabel.Font = new System.Drawing.Font("Myanmar Text", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TimeLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.TimeLabel.Location = new System.Drawing.Point(733, 0);
-            this.TimeLabel.Name = "TimeLabel";
-            this.TimeLabel.Padding = new System.Windows.Forms.Padding(0, 28, 0, 0);
-            this.TimeLabel.Size = new System.Drawing.Size(87, 48);
-            this.TimeLabel.TabIndex = 2;
-            this.TimeLabel.Text = "10.2.2024 10:14";
+            this.UserConectivityLabel.AutoSize = true;
+            this.UserConectivityLabel.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UserConectivityLabel.Location = new System.Drawing.Point(3, 1);
+            this.UserConectivityLabel.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
+            this.UserConectivityLabel.Name = "UserConectivityLabel";
+            this.UserConectivityLabel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.UserConectivityLabel.Size = new System.Drawing.Size(135, 22);
+            this.UserConectivityLabel.TabIndex = 0;
+            this.UserConectivityLabel.Text = "Client Connected";
+            this.UserConectivityLabel.Click += new System.EventHandler(this.UserConectivityLabel_Click);
             // 
             // UserStatus
             // 

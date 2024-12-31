@@ -26,7 +26,7 @@ namespace microcontrollerSide
             controller = controllerSock;
         }
 
-        public void setUI(CommunicaionForm form)
+        public void setUI(CommunicaionForm form)//
         {
             UI = form;
             UI.GetLabel().Text = code;
