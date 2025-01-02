@@ -31,7 +31,7 @@ namespace microcontrollerSide
         {
             if (ControllerName.Text == "")
                 return;
-
+            ConnectionErrorLabel.Text = "Trying to connect the server.....";
             new Thread(() =>
             {
                 (bool status, Socket Conn) = CreateConn();
@@ -68,6 +68,7 @@ namespace microcontrollerSide
                     CommunicaionForm communicaionForm = new CommunicaionForm(temp);
                     temp.setUI(communicaionForm);
 
+                    
                     this.BeginInvoke(new Action(() => {
                         this.Hide();
                         communicaionForm.Show();
@@ -79,6 +80,7 @@ namespace microcontrollerSide
 
                 }
             }).Start();
+
             
         }
 
@@ -102,8 +104,9 @@ namespace microcontrollerSide
                 Conn.Send(RsaEncryption.GenerateKeys());
 
 
-                byte[] ServerpublicKey = new byte[10240];
+                byte[] ServerpublicKey = new byte[1024];
                 int bytesRec = Conn.Receive(ServerpublicKey);
+
 
                 RsaEncryption.SetServerPublicKey(Encoding.UTF8.GetString(ServerpublicKey, 0, bytesRec));
 
@@ -114,9 +117,19 @@ namespace microcontrollerSide
             }
             catch (SocketException error)
             {
-                ControlletNameLabel.Text += "error";
+                ConnectionErrorLabel.Text = "No connection could be made. Try again later...";
                 return (false, null);
             }
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ControlletNameLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

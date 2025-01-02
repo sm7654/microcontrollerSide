@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AesEncryption.cs" />
     <Compile Include="ClientWaitingForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -29,15 +29,17 @@ namespace microcontrollerSide
             microController = Controller;
 
             InitializeComponent();
+
         }
         public CommunicaionForm()
         {
             InitializeComponent();
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void formClosing(object sender, EventArgs e)
         {
 
+            Application.Exit();
         }
         
         private void SendToServerButton_Click(object sender, EventArgs e)
@@ -60,6 +62,11 @@ namespace microcontrollerSide
         }
 
         private void RoomCodeLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DialogPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }

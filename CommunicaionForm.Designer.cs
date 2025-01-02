@@ -40,13 +40,14 @@ namespace microcontrollerSide
             this.IsCLientConnectedLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.DialogPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.FormClosing += formClosing;
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // LiftLabel
             // 
             this.LiftLabel.AutoSize = true;
-            this.LiftLabel.Location = new System.Drawing.Point(761, 469);
+            this.LiftLabel.Location = new System.Drawing.Point(676, 489);
             this.LiftLabel.Name = "LiftLabel";
             this.LiftLabel.Size = new System.Drawing.Size(24, 13);
             this.LiftLabel.TabIndex = 0;
@@ -55,32 +56,31 @@ namespace microcontrollerSide
             // SpeedLabel
             // 
             this.SpeedLabel.AutoSize = true;
-            this.SpeedLabel.Location = new System.Drawing.Point(761, 421);
+            this.SpeedLabel.Location = new System.Drawing.Point(676, 441);
             this.SpeedLabel.Name = "SpeedLabel";
             this.SpeedLabel.Size = new System.Drawing.Size(41, 13);
             this.SpeedLabel.TabIndex = 1;
             this.SpeedLabel.Text = "Speed:";
-            this.SpeedLabel.Click += new System.EventHandler(this.label2_Click);
             // 
             // SpeedInput
             // 
             this.SpeedInput.BackColor = System.Drawing.Color.White;
             this.SpeedInput.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.SpeedInput.Location = new System.Drawing.Point(764, 437);
+            this.SpeedInput.Location = new System.Drawing.Point(679, 457);
             this.SpeedInput.Name = "SpeedInput";
             this.SpeedInput.Size = new System.Drawing.Size(129, 20);
             this.SpeedInput.TabIndex = 2;
             // 
             // LiftInput
             // 
-            this.LiftInput.Location = new System.Drawing.Point(764, 485);
+            this.LiftInput.Location = new System.Drawing.Point(679, 505);
             this.LiftInput.Name = "LiftInput";
             this.LiftInput.Size = new System.Drawing.Size(129, 20);
             this.LiftInput.TabIndex = 3;
             // 
             // SendToServerButton
             // 
-            this.SendToServerButton.Location = new System.Drawing.Point(167, 437);
+            this.SendToServerButton.Location = new System.Drawing.Point(945, 505);
             this.SendToServerButton.Name = "SendToServerButton";
             this.SendToServerButton.Size = new System.Drawing.Size(75, 23);
             this.SendToServerButton.TabIndex = 4;
@@ -91,22 +91,26 @@ namespace microcontrollerSide
             // RoomCodeLabel
             // 
             this.RoomCodeLabel.AutoSize = true;
-            this.RoomCodeLabel.Location = new System.Drawing.Point(942, 26);
+            this.RoomCodeLabel.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RoomCodeLabel.Location = new System.Drawing.Point(906, 20);
             this.RoomCodeLabel.Name = "RoomCodeLabel";
-            this.RoomCodeLabel.Size = new System.Drawing.Size(63, 13);
+            this.RoomCodeLabel.Size = new System.Drawing.Size(99, 19);
             this.RoomCodeLabel.TabIndex = 5;
             this.RoomCodeLabel.Text = "room code: ";
             this.RoomCodeLabel.Click += new System.EventHandler(this.RoomCodeLabel_Click);
             // 
             // IsCLientConnectedLabel
             // 
+            this.IsCLientConnectedLabel.AutoEllipsis = true;
             this.IsCLientConnectedLabel.AutoSize = true;
-            this.IsCLientConnectedLabel.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IsCLientConnectedLabel.Location = new System.Drawing.Point(137, 498);
+            this.IsCLientConnectedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.IsCLientConnectedLabel.Location = new System.Drawing.Point(137, 421);
+            this.IsCLientConnectedLabel.MaximumSize = new System.Drawing.Size(1000, 0);
             this.IsCLientConnectedLabel.Name = "IsCLientConnectedLabel";
-            this.IsCLientConnectedLabel.Size = new System.Drawing.Size(161, 16);
+            this.IsCLientConnectedLabel.Size = new System.Drawing.Size(137, 13);
             this.IsCLientConnectedLabel.TabIndex = 7;
             this.IsCLientConnectedLabel.Text = "waiting for client to connect";
+            this.IsCLientConnectedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.IsCLientConnectedLabel.Click += new System.EventHandler(this.IsCLientConnectedLabel_Click);
             // 
             // panel1
@@ -120,13 +124,16 @@ namespace microcontrollerSide
             // 
             // DialogPanel
             // 
+            this.DialogPanel.AutoScroll = true;
             this.DialogPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.DialogPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DialogPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DialogPanel.Location = new System.Drawing.Point(0, 0);
             this.DialogPanel.Name = "DialogPanel";
             this.DialogPanel.Padding = new System.Windows.Forms.Padding(15, 15, 0, 0);
             this.DialogPanel.Size = new System.Drawing.Size(865, 376);
             this.DialogPanel.TabIndex = 0;
+            this.DialogPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DialogPanel_Paint);
             // 
             // CommunicaionForm
             // 
@@ -175,7 +182,7 @@ namespace microcontrollerSide
         public void CLientIsOnline()
         {
             this.CLientOnline = true;
-            this.IsCLientConnectedLabel.Text = $"Client connected";
+            this.IsCLientConnectedLabel.Text = $"Client Is Online.";
 
         }
 

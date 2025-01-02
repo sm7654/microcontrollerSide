@@ -18,6 +18,7 @@ namespace microcontrollerSide
         public static byte[] GenerateKeys()
         {
             Service = RSA.Create();
+            Service.KeySize = 1024;
             publicKey = Service.ToXmlString(false);
             privateKey = Service.ToXmlString(true);
             return Encoding.UTF8.GetBytes(publicKey);

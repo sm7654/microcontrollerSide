@@ -1,6 +1,7 @@
 ﻿using ServerSide;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -22,6 +23,8 @@ namespace microcontrollerSide
             code = Roomcode;
             EncryptedToServerCode = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes(code));
             ClientVideoRequest = false;
+
+            
             new Thread(() => ListenTo200Code()).Start();
             //this.form.GetroomCodeLabel().Text = "RoomCode: " + code;
         }
@@ -34,6 +37,10 @@ namespace microcontrollerSide
         {
             UI = form;
             UI.GetLabel().Text = code;
+            UserStatus Control = new UserStatus(true, "Connected To Server");
+            Control.SetRemoteEndPoint(controller.RemoteEndPoint.ToString());
+            UI.GetDialogPanel().Controls.Add(Control);
+            
         }
 
 
@@ -78,9 +85,17 @@ namespace microcontrollerSide
                     UI.BeginInvoke(new Action(() =>
                     {
                         UI.CLientIsOnline();
-                        UserStatus Control = new UserStatus(true);
+                        UserStatus Control = new UserStatus(true, "Client Connected!");
                         Control.SetRemoteEndPoint(Status[1]);
                         UI.GetDialogPanel().Controls.Add(Control);
+
+                        byte[] AESKey = new byte[128];
+                        int bytesread = controller.Receive(AESKey);
+
+
+                        byte[] AESIv = new byte[128];
+                        bytesread = controller.Receive(AESIv);
+
 
                     }));
 
