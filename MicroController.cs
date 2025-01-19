@@ -26,7 +26,6 @@ namespace microcontrollerSide
 
             
             new Thread(() => ListenTo200Code()).Start();
-            //this.form.GetroomCodeLabel().Text = "RoomCode: " + code;
         }
         public MicroController(Socket controllerSock)
         {

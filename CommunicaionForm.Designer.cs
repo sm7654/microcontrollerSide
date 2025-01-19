@@ -31,6 +31,7 @@ namespace microcontrollerSide
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommunicaionForm));
             this.LiftLabel = new System.Windows.Forms.Label();
             this.SpeedLabel = new System.Windows.Forms.Label();
             this.SpeedInput = new System.Windows.Forms.TextBox();
@@ -40,7 +41,6 @@ namespace microcontrollerSide
             this.IsCLientConnectedLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.DialogPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.FormClosing += formClosing;
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -150,6 +150,7 @@ namespace microcontrollerSide
             this.Controls.Add(this.SpeedLabel);
             this.Controls.Add(this.LiftLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CommunicaionForm";
             this.Text = "CommunicaionForm";
             this.Load += new System.EventHandler(this.CommunicaionForm_Load);

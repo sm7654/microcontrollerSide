@@ -49,19 +49,14 @@ namespace microcontrollerSide
                     Conn.Send(recognitionBytes);
 
 
-                    byte[] roomCode = new byte[1024];
+                    byte[] roomCode = new byte[128];
                     int length = Conn.Receive(roomCode);
-                    string gg = Encoding.UTF8.GetString(roomCode, 0, length);
-                    int incomingmassegeLength = int.Parse(gg);
-                    roomCode = new byte[incomingmassegeLength];
-                    Conn.Receive(roomCode);
 
 
-                    string Code = "";
-                    if (length > 0)
-                    {
-                        Code = RsaEncryption.Decrypt(roomCode).Split(' ')[1];
-                    }
+                    string Code = RsaEncryption.Decrypt(roomCode);
+                    if (length <= 0 || Code == "500")
+                        return;
+                    
 
 
                     MicroController temp = new MicroController(Conn, Code);
