@@ -10,6 +10,7 @@ namespace ServerSide
 {
     static class ClosingController
     {
+
         public static void btnExit_Click(object sender, EventArgs e)
         {
             string SolutionName = Assembly.GetCallingAssembly().GetName().Name;

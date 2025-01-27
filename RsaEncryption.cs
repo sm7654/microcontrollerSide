@@ -31,6 +31,13 @@ namespace microcontrollerSide
 
             return Encoding.UTF8.GetString(Service.Decrypt(data, RSAEncryptionPadding.Pkcs1));
         }
+        public static byte[] DecryptToByte(byte[] data)
+        {
+            Service = RSA.Create();
+            Service.FromXmlString(privateKey);
+
+            return Service.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+        }
 
         public static byte[] EncryptToServer(byte[] data)
         {

@@ -1,6 +1,7 @@
 ﻿using ServerSide;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -17,6 +18,8 @@ namespace microcontrollerSide
         private static byte[] EncryptedToServerCode;
         private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
+        private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
+
         public MicroController(Socket controllerSock, string Roomcode)
         {
             controller = controllerSock;
@@ -24,7 +27,7 @@ namespace microcontrollerSide
             EncryptedToServerCode = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes(code));
             ClientVideoRequest = false;
 
-            
+
             new Thread(() => ListenTo200Code()).Start();
         }
         public MicroController(Socket controllerSock)
@@ -39,7 +42,7 @@ namespace microcontrollerSide
             UserStatus Control = new UserStatus(true, "Connected To Server");
             Control.SetRemoteEndPoint(controller.RemoteEndPoint.ToString());
             UI.GetDialogPanel().Controls.Add(Control);
-            
+
         }
 
 
@@ -71,7 +74,7 @@ namespace microcontrollerSide
             {
                 byte[] bytes = new byte[1024];
                 int bytesRead = controller.Receive(bytes);
-                byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes,0,bytesRead))];
+                byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
                 controller.Receive(bytes1);
                 string[] Status = RsaEncryption.Decrypt(bytes1).Split(';');
 
@@ -95,6 +98,10 @@ namespace microcontrollerSide
                         byte[] AESIv = new byte[128];
                         bytesread = controller.Receive(AESIv);
 
+                        AesEncryption.Addkeys(AESKey, AESIv);
+
+                        new Thread(() => StartClientCommunication_recv()).Start();
+
 
                     }));
 
@@ -115,6 +122,80 @@ namespace microcontrollerSide
         }
 
 
+        private void StartClientCommunication_recv()
+        {
+
+            while (controller.Connected)
+            {
+                try
+                {
+                    byte[] buffer = new byte[1024];
+                    int byteRec = controller.Receive(buffer);
+
+                    buffer = new byte[int.Parse(Encoding.UTF8.GetString(buffer, 0, byteRec))];
+                    controller.Receive(buffer);
+
+                    if (buffer.Length >= ServerRole.Length)
+                    {
+                        try
+                        {
+                            byte[] data = RsaEncryption.DecryptToByte(buffer);
+                            if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
+                                ServerRelatedMessages(data);
+                        }
+                        catch (Exception e) { }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+        }
+
+    
+
+        public static void SendToClient(byte[] data)
+        {
+            try
+            {
+                byte[] EncryptedData = AesEncryption.EncryptedData(data);
+                controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
+                Thread.Sleep(200);
+                controller.Send(EncryptedData);
+            } catch (Exception e)
+            {
+                return;
+            }
+        }
+
+        private void ServerRelatedMessages(byte[] data)
+        {
+            try
+            {
+                string[] bytes = Encoding.UTF8.GetString(data).Split(';');
+                if (bytes[1] == "cDis") 
+                {
+                    UserStatus userStatus = new UserStatus(false, "Client disconnected");
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UI.GetDialogPanel().Controls.Add(userStatus);
+                    }));
+                        
+                        
+                }
+            }
+            catch (Exception e) { }
+        }
+
+
+
+        public static void DisconnectFromServer()
+        {
+            //303 --> disconnected code
+            //controller.Send("303");
+        }
 
 
     }

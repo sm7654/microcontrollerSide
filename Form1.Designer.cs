@@ -139,7 +139,6 @@ namespace microcontrollerSide
             this.ControlletNameLabel.TabIndex = 2;
             this.ControlletNameLabel.Text = "Iderntifier";
             this.ControlletNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ControlletNameLabel.Click += new System.EventHandler(this.ControlletNameLabel_Click);
             // 
             // pictureBox1
             // 

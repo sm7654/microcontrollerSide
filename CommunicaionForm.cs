@@ -44,26 +44,16 @@ namespace microcontrollerSide
         
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            if (!this.CLientOnline) return;
-
-            string Speed = SpeedInput.Text;
-            string Lift = LiftInput.Text;
+            byte[] excelBytes = FileHandler.GetFileBytes(@"C:\Users\user\Desktop\MicroData.xlsx");
+            if (excelBytes != null)
+            {
+                MicroController.SendToClient(excelBytes);
+            }
         }
         
         public bool IsClientOnline()
         {
             return this.CLientOnline;
-        }
-      
-
-        private void IsCLientConnectedLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void RoomCodeLabel_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void DialogPanel_Paint(object sender, PaintEventArgs e)

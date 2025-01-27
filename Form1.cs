@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ServerSide;
 
 namespace microcontrollerSide
 {
@@ -19,6 +13,7 @@ namespace microcontrollerSide
         public Form1()
         {
             RsaEncryption.GenerateKeys();
+
             InitializeComponent();
         }
 
@@ -29,6 +24,7 @@ namespace microcontrollerSide
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
+            
             if (ControllerName.Text == "")
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
@@ -117,14 +113,5 @@ namespace microcontrollerSide
             }
         }
 
-        private void progressBar1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ControlletNameLabel_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
