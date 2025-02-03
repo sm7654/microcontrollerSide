@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using ServerSide;
 
 namespace microcontrollerSide
 {
@@ -12,9 +13,10 @@ namespace microcontrollerSide
     {
         public Form1()
         {
-            RsaEncryption.GenerateKeys();
 
+            RsaEncryption.GenerateKeys();
             InitializeComponent();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -55,9 +57,10 @@ namespace microcontrollerSide
                     
 
 
-                    MicroController temp = new MicroController(Conn, Code);
-                    CommunicaionForm communicaionForm = new CommunicaionForm(temp);
-                    temp.setUI(communicaionForm);
+                    MicroController.SetMicroController(Conn, Code);
+                    CommunicaionForm communicaionForm = new CommunicaionForm();
+                    MicroController.setUI(communicaionForm);
+                    ExperimentController.SetForm(communicaionForm);
 
                     
                     this.BeginInvoke(new Action(() => {
@@ -87,7 +90,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("149.106.149.75"), 65000);
 
                 Conn.Connect(address);
 
@@ -113,5 +116,9 @@ namespace microcontrollerSide
             }
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ClosingController.btnExit_Click();
+        }
     }
 }

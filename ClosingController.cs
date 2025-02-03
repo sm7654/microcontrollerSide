@@ -27,7 +27,8 @@ namespace ServerSide
             Process[] processes = Process.GetProcessesByName(SolutionName);
             foreach (Process process in processes)
             {
-                try { process.Kill(); } catch { }
+                try { 
+                    process.Kill(); } catch { }
             }
         }
     }

@@ -47,6 +47,36 @@ namespace microcontrollerSide
 
             return null;
         }
+
+        public static byte[] DecryptData(byte[] encryptedData)
+        {
+            if (aesKey == null || aesIV == null)
+                return null;
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = aesKey;
+                    aes.IV = aesIV;
+
+                    ICryptoTransform decryptor = aes.CreateDecryptor();
+                    using (MemoryStream ms = new MemoryStream(encryptedData))
+                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    using (MemoryStream decryptedStream = new MemoryStream())
+                    {
+                        cs.CopyTo(decryptedStream);
+                        return decryptedStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // Handle the exception appropriately
+            }
+
+            return null;
+        }
+
         public static byte[] FileEn()
         {
             byte[] data = File.ReadAllBytes("C:\\Users\\user\\Desktop\\2024-11-16.IBC_UNLIMITED.Faulty_Sites.xlsx");

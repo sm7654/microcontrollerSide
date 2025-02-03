@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace microcontrollerSide
 {
-    public class MicroController
+    static class MicroController
     {
         private static Socket controller;
         private static string code;
@@ -19,8 +21,9 @@ namespace microcontrollerSide
         private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
         private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
+        private static bool clientConnected = false;
 
-        public MicroController(Socket controllerSock, string Roomcode)
+        public static void SetMicroController(Socket controllerSock, string Roomcode)
         {
             controller = controllerSock;
             code = Roomcode;
@@ -30,12 +33,12 @@ namespace microcontrollerSide
 
             new Thread(() => ListenTo200Code()).Start();
         }
-        public MicroController(Socket controllerSock)
+        public static void SetMicroController(Socket controllerSock)
         {
             controller = controllerSock;
         }
 
-        public void setUI(CommunicaionForm form)//
+        public static void setUI(CommunicaionForm form)//
         {
             UI = form;
             UI.GetLabel().Text = code;
@@ -49,7 +52,7 @@ namespace microcontrollerSide
 
 
 
-        public void VideoCasting()
+        public static void VideoCasting()
         {
             /*
              while (ClientVideoRequest){
@@ -68,7 +71,7 @@ namespace microcontrollerSide
 
 
 
-        public void ListenTo200Code()
+        public static void ListenTo200Code()
         {
             try
             {
@@ -100,6 +103,7 @@ namespace microcontrollerSide
 
                         AesEncryption.Addkeys(AESKey, AESIv);
 
+                        clientConnected = true;
                         new Thread(() => StartClientCommunication_recv()).Start();
 
 
@@ -114,21 +118,23 @@ namespace microcontrollerSide
                     UI.BeginInvoke(new Action(() =>
                     {
                         UI.Close();
-                        ClosingController.btnExit_Click();
+                        
                     }));
+                    ClosingController.btnExit_Click();
                 }
             }
             catch (Exception e) { controller.Close(); }
         }
 
 
-        private void StartClientCommunication_recv()
+        private static void StartClientCommunication_recv()
         {
 
             while (controller.Connected)
             {
                 try
                 {
+                    bool Server = false;
                     byte[] buffer = new byte[1024];
                     int byteRec = controller.Receive(buffer);
 
@@ -141,10 +147,20 @@ namespace microcontrollerSide
                         {
                             byte[] data = RsaEncryption.DecryptToByte(buffer);
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
-                                ServerRelatedMessages(data);
+                                Server = true;
+
+                            if (Server) {
+                                new Thread(() => ServerRelatedMessages(data)).Start();  }
+
+                            else {
+                                new Thread(() => ClientRelatedMessages(data)).Start(); }
                         }
                         catch (Exception e) { }
                     }
+                    
+                    new Thread(() => ClientRelatedMessages(buffer)).Start();
+                    
+
 
                 }
                 catch (Exception e)
@@ -155,28 +171,37 @@ namespace microcontrollerSide
         }
 
     
-
+        public static void SendToClient(string data)
+        {
+            SendToClient(Encoding.UTF8.GetBytes(data));
+        }
         public static void SendToClient(byte[] data)
         {
+            if (!clientConnected)
+                return;
+            
             try
             {
                 byte[] EncryptedData = AesEncryption.EncryptedData(data);
                 controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
-                Thread.Sleep(200);
+                
                 controller.Send(EncryptedData);
+
+
             } catch (Exception e)
             {
                 return;
             }
         }
 
-        private void ServerRelatedMessages(byte[] data)
+        private static void ServerRelatedMessages(byte[] data)
         {
             try
             {
                 string[] bytes = Encoding.UTF8.GetString(data).Split(';');
-                if (bytes[1] == "cDis") 
+                if (bytes[1] == "302") 
                 {
+                    clientConnected = false;
                     UserStatus userStatus = new UserStatus(false, "Client disconnected");
                     UI.BeginInvoke(new Action(() =>
                     {
@@ -190,9 +215,78 @@ namespace microcontrollerSide
         }
 
 
+        private static void ClientRelatedMessages(byte[] data)
+        {
+            try
+            {
+                
+                string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
+                if (message[0] == "ERROR")
+                {
+                    switch (message[1])
+                    {
+                        
+
+
+
+                        default: break;
+                    }
+
+                }
+                else if (message[0] == "SUCCESS")
+                {
+                    switch (message[1])
+                    {
+
+                        
+                        default: break;
+                    }
+                }
+                else
+                {
+                    switch (message[0])
+                    {
+                        case "EXPERIMENT":
+
+                            ExperimentController.NewExperiment(message);
+
+                            break;
+
+                        default: break;
+                    }
+                }
+                UI.BeginInvoke(new Action(() =>
+                {
+                    UI.EnableSendAction();
+                }));
+            }
+            catch (Exception e)
+            { }
+        }
+
+
+
+
+
+
 
         public static void DisconnectFromServer()
         {
+
+
+            byte[] disMessage = Encoding.UTF8.GetBytes(";303");
+
+            disMessage = RsaEncryption.EncryptToServer(ServerRole.Concat(disMessage).ToArray());
+
+            controller.Send(Encoding.UTF8.GetBytes(disMessage.Length.ToString()));
+
+            Thread.Sleep(400);
+            controller.Send(disMessage);
+
+
+
+
+
             //303 --> disconnected code
             //controller.Send("303");
         }
