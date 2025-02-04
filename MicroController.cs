@@ -20,7 +20,7 @@ namespace microcontrollerSide
         private static byte[] EncryptedToServerCode;
         private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
-        private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
+        private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%;");
         private static bool clientConnected = false;
 
         public static void SetMicroController(Socket controllerSock, string Roomcode)
@@ -274,7 +274,7 @@ namespace microcontrollerSide
         {
 
 
-            byte[] disMessage = Encoding.UTF8.GetBytes(";303");
+            byte[] disMessage = Encoding.UTF8.GetBytes("303");
 
             disMessage = RsaEncryption.EncryptToServer(ServerRole.Concat(disMessage).ToArray());
 
