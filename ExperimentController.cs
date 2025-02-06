@@ -35,8 +35,10 @@ namespace microcontrollerSide
         {
 
             // pipe communication
-            
 
+            DateTime curentDate = DateTime.Now;
+            DateTime dateOnly = curentDate.Date;
+            string curentTime = dateOnly.ToString("yyyy-MM-dd");
             string deltaSpeed = "5";
             string temp = "21";
             string CameraSpeed = "14";
@@ -44,7 +46,8 @@ namespace microcontrollerSide
             string humidity = "40";
             string Time = "32";
 
-            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{CameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{Time};energy effieceint #5";
+
+            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{CameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{curentTime};{Time};energy effieceint #5";
             MicroController.SendToClient(ExperResults);
 
 

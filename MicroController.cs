@@ -149,17 +149,22 @@ namespace microcontrollerSide
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
                                 Server = true;
 
-                            if (Server) {
-                                new Thread(() => ServerRelatedMessages(data)).Start();  }
+                            if (Server)
+                            {
+                                new Thread(() => ServerRelatedMessages(data)).Start();
+                            }
 
-                            else {
-                                new Thread(() => ClientRelatedMessages(data)).Start(); }
+                            else
+                            {
+                                new Thread(() => ClientRelatedMessages(data)).Start();
+                            }
                         }
-                        catch (Exception e) { }
+                        catch (Exception e) { new Thread(() => ClientRelatedMessages(buffer)).Start(); }
                     }
-                    
-                    new Thread(() => ClientRelatedMessages(buffer)).Start();
-                    
+                    else
+                    {
+                        new Thread(() => ClientRelatedMessages(buffer)).Start();
+                    }
 
 
                 }
