@@ -44,7 +44,8 @@ namespace microcontrollerSide
             string CameraSpeed = "14";
             string innerPressure = "31";
             string humidity = "40";
-            string Time = "32";
+            string Time = "47sec";
+
 
 
             string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{CameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{curentTime};{Time};energy effieceint #5";
