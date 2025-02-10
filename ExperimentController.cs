@@ -54,7 +54,7 @@ namespace microcontrollerSide
             string randomLastName = lastNames[random.Next(lastNames.Length)];
 
 
-            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{cameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{curentTime};{time};{randomFirstName}";
+            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;{curentTime};{time};{randomFirstName}";
             MicroController.SendToClient(ExperResults);
 
 
