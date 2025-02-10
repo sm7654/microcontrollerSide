@@ -82,7 +82,7 @@ namespace microcontrollerSide
                 string[] Status = RsaEncryption.Decrypt(bytes1).Split(';');
 
 
-                string returnCode = Status[0];
+                string returnCode = Status[1];
 
 
                 if (returnCode == "200")
@@ -91,7 +91,7 @@ namespace microcontrollerSide
                     {
                         UI.CLientIsOnline();
                         UserStatus Control = new UserStatus(true, "Client Connected!");
-                        Control.SetRemoteEndPoint(Status[1]);
+                        Control.SetRemoteEndPoint(Status[2]);
                         UI.GetDialogPanel().Controls.Add(Control);
 
                         byte[] AESKey = new byte[128];
@@ -130,7 +130,7 @@ namespace microcontrollerSide
         private static void StartClientCommunication_recv()
         {
 
-            while (controller.Connected)
+            while (controller.Connected && clientConnected)
             {
                 try
                 {
@@ -147,13 +147,13 @@ namespace microcontrollerSide
                         {
                             byte[] data = RsaEncryption.DecryptToByte(buffer);
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
-                                Server = true;
-
-                            if (Server)
                             {
+                                if (Is200Mesgae(data))
+                                {
+                                    return;
+                                }
                                 new Thread(() => ServerRelatedMessages(data)).Start();
                             }
-
                             else
                             {
                                 new Thread(() => ClientRelatedMessages(data)).Start();
@@ -199,12 +199,23 @@ namespace microcontrollerSide
             }
         }
 
+        private static bool Is200Mesgae(byte[] data)
+        {
+            string[] bytes = Encoding.UTF8.GetString(data).Split(';');
+            if (bytes[1] == "200")
+            {
+                ServerRelatedMessages(data);
+                return true;
+            }
+            return false;
+        }
+
         private static void ServerRelatedMessages(byte[] data)
         {
             try
             {
                 string[] bytes = Encoding.UTF8.GetString(data).Split(';');
-                if (bytes[1] == "302") 
+                if (bytes[1] == "302")
                 {
                     clientConnected = false;
                     UserStatus userStatus = new UserStatus(false, "Client disconnected");
@@ -212,12 +223,45 @@ namespace microcontrollerSide
                     {
                         UI.GetDialogPanel().Controls.Add(userStatus);
                     }));
-                        
-                        
+
+                }
+                else if (bytes[1] == "200")
+                {
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UI.CLientIsOnline();
+                        UserStatus Control = new UserStatus(true, "Client Connected!");
+                        Control.SetRemoteEndPoint(bytes[2]);
+                        UI.GetDialogPanel().Controls.Add(Control);
+
+                        byte[] AESKey = new byte[128];
+                        int bytesread = controller.Receive(AESKey);
+
+
+                        byte[] AESIv = new byte[128];
+                        bytesread = controller.Receive(AESIv);
+
+                        AesEncryption.Addkeys(AESKey, AESIv);
+
+                        clientConnected = true;
+                        new Thread(() => StartClientCommunication_recv()).Start();
+
+                    }));
+                }
+                else if (bytes[1] == "Shut")
+                {
+                    controller.Close();
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UI.Close();
+
+                    }));
+                    ClosingController.btnExit_Click();
                 }
             }
             catch (Exception e) { }
         }
+
 
 
         private static void ClientRelatedMessages(byte[] data)

@@ -38,17 +38,23 @@ namespace microcontrollerSide
 
             DateTime curentDate = DateTime.Now;
             DateTime dateOnly = curentDate.Date;
+            Random random = new Random();
             string curentTime = dateOnly.ToString("yyyy-MM-dd");
-            string deltaSpeed = "5";
-            string temp = "21";
-            string CameraSpeed = "14";
-            string innerPressure = "31";
-            string humidity = "40";
-            string Time = "47sec";
+            string deltaSpeed = random.Next(1, 100).ToString();
+            string temp = random.Next(-30, 50).ToString();
+            string cameraSpeed = random.Next(1, 100).ToString();
+            string innerPressure = random.Next(10, 100).ToString();
+            string humidity = random.Next(0, 100).ToString();
+            string time = random.Next(1, 60).ToString() + "sec";
+
+            string[] firstNames = { "Aria", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason", "Isabella", "Logan" };
+            string[] lastNames = { "Silverwood", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez" };
+
+            string randomFirstName = firstNames[random.Next(firstNames.Length)];
+            string randomLastName = lastNames[random.Next(lastNames.Length)];
 
 
-
-            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{CameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{curentTime};{Time};energy effieceint #5";
+            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}m/s;Temperature:{temp}deg;Camera Speed:{cameraSpeed}m/s;Inner Pressure:{innerPressure}psi;Humidity:{humidity}deg;{curentTime};{time};{randomFirstName}";
             MicroController.SendToClient(ExperResults);
 
 
