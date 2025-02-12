@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.IO.Pipes;
 
 namespace microcontrollerSide
 {
@@ -34,7 +35,15 @@ namespace microcontrollerSide
         public static void MicroChipCommunication()
         {
 
-            // pipe communication
+    
+
+
+
+
+
+
+
+        // pipe communication
 
             DateTime curentDate = DateTime.Now;
             DateTime dateOnly = curentDate.Date;
