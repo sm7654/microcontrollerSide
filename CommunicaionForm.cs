@@ -38,9 +38,11 @@ namespace microcontrollerSide
         
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            ExperimentController.MicroChipCommunication();
+            
 
+            //     InitionlisePipe
 
+            return;
             return;
             byte[] excelBytes = FileHandler.GetFileBytes(@"C:\Users\shai\Downloads\Book1.xlsx");
             if (excelBytes != null)

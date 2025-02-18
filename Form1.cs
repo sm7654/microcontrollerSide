@@ -11,9 +11,9 @@ namespace microcontrollerSide
 {
     public partial class Form1 : Form
     {
+        
         public Form1()
         {
-
             RsaEncryption.GenerateKeys();
             InitializeComponent();
 
@@ -21,12 +21,12 @@ namespace microcontrollerSide
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            
+            //ConnectionErrorLabel.Text = $"{PipeStream.InitionlisePipe()}";
             if (ControllerName.Text == "")
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
@@ -89,7 +89,7 @@ namespace microcontrollerSide
                 string name = ControllerName.Text;
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
+                
                 IPEndPoint address = new IPEndPoint(IPAddress.Parse("149.106.149.75"), 65000);
 
                 Conn.Connect(address);

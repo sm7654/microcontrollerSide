@@ -6,6 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO.Pipes;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms.VisualStyles;
+
 
 namespace microcontrollerSide
 {
@@ -28,18 +32,16 @@ namespace microcontrollerSide
 
                 form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
 
+                PipeStream.WriteToPipe(experName);
+
             }
             catch (Exception ex) { return; }
         }
 
-        public static void MicroChipCommunication()
+        public static void MicroChipCommunication(string name)
         {
-
-    
-
-
-
-
+                
+            
 
 
 
@@ -60,6 +62,7 @@ namespace microcontrollerSide
             string[] lastNames = { "Silverwood", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez" };
 
             string randomFirstName = firstNames[random.Next(firstNames.Length)];
+            randomFirstName = name;
             string randomLastName = lastNames[random.Next(lastNames.Length)];
 
 

@@ -181,7 +181,6 @@ namespace microcontrollerSide
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label ConnectionErrorLabel;
-
     }
 }
 
