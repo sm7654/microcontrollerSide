@@ -38,7 +38,7 @@ namespace microcontrollerSide
         
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            
+            ExperimentController.MicroChipCommunication("shai");
 
             //     InitionlisePipe
 

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -20,7 +21,7 @@ namespace microcontrollerSide
         private static byte[] EncryptedToServerCode;
         private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
-        private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%;");
+        private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
         private static bool clientConnected = false;
 
         public static void SetMicroController(Socket controllerSock, string Roomcode)
@@ -145,33 +146,41 @@ namespace microcontrollerSide
                 {
                     bool Server = false;
                     byte[] buffer = new byte[1024];
+                    controller.ReceiveTimeout = 0;
                     int byteRec = controller.Receive(buffer);
-
                     buffer = new byte[int.Parse(Encoding.UTF8.GetString(buffer, 0, byteRec))];
+                    controller.ReceiveTimeout = 10000;
                     controller.Receive(buffer);
 
+
+                    PipeMessageRec("got the message");
                     if (buffer.Length >= ServerRole.Length)
                     {
                         try
                         {
                             byte[] data = RsaEncryption.DecryptToByte(buffer);
+                            PipeMessageRec("encrypted rsa");
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
                             {
                                 if (Is200Mesgae(data))
                                 {
                                     return;
                                 }
+                                PipeMessageRec("Server message");
                                 new Thread(() => ServerRelatedMessages(data)).Start();
                             }
                             else
                             {
+                                PipeMessageRec("Client message");
                                 new Thread(() => ClientRelatedMessages(data)).Start();
                             }
                         }
-                        catch (Exception e) { new Thread(() => ClientRelatedMessages(buffer)).Start(); }
+                        catch (Exception e) { PipeMessageRec("Client message"); new Thread(() => ClientRelatedMessages(buffer)).Start(); }
                     }
                     else
                     {
+                        PipeMessageRec("cleint message");
+
                         new Thread(() => ClientRelatedMessages(buffer)).Start();
                     }
 
@@ -198,7 +207,7 @@ namespace microcontrollerSide
             {
                 byte[] EncryptedData = AesEncryption.EncryptedData(data);
                 controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
-                
+                Thread.Sleep(200);
                 controller.Send(EncryptedData);
 
 
@@ -223,7 +232,7 @@ namespace microcontrollerSide
         {
             try
             {
-                string[] bytes = Encoding.UTF8.GetString(data).Split(';');
+                string[] bytes = Encoding.UTF8.GetString(data).Split('&');
                 if (bytes[1] == "302")
                 {
                     clientConnected = false;
@@ -279,6 +288,7 @@ namespace microcontrollerSide
             {
                 
                 string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
+                
                 if (message[0] == "ERROR")
                 {
                     switch (message[1])
@@ -304,9 +314,10 @@ namespace microcontrollerSide
                 {
                     switch (message[0])
                     {
-                        case "EXPERIMENT":
-
+                        case "NEWXPERIMENT":
+                            PipeMessageRec($"Got {message[0]} {message[1]}");
                             ExperimentController.NewExperiment(message);
+                            SendToClient("EXPERREACHED");
 
                             break;
 
@@ -323,21 +334,33 @@ namespace microcontrollerSide
         }
 
 
+        public static void PipeMessageRec(string g)
+        {
+            
+            UI.BeginInvoke(new Action(() =>
+            {
+                UI.GG(g);
+            }));
+        }
 
+        public static void SendToServer(byte[] data)
+        {
+            data = RsaEncryption.EncryptToServer(ServerRole.Concat(data).ToArray());
+
+            controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
+
+            Thread.Sleep(400);
+            controller.Send(data);
+        }
 
 
         public static void DisconnectFromServer()
         {
 
 
-            byte[] disMessage = Encoding.UTF8.GetBytes("303");
+            byte[] disMessage = Encoding.UTF8.GetBytes("&303");
 
-            disMessage = RsaEncryption.EncryptToServer(ServerRole.Concat(disMessage).ToArray());
-
-            controller.Send(Encoding.UTF8.GetBytes(disMessage.Length.ToString()));
-
-            Thread.Sleep(400);
-            controller.Send(disMessage);
+            
 
 
 

@@ -21,12 +21,11 @@ namespace microcontrollerSide
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            //ConnectionErrorLabel.Text = $"{PipeStream.InitionlisePipe()}";
             if (ControllerName.Text == "")
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
@@ -40,7 +39,7 @@ namespace microcontrollerSide
 
                     // generate keys and returns the public key and send it do server
 
-                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp;{ControllerName.Text}"));
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}"));
 
                     Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
                     Thread.Sleep(200);
@@ -61,8 +60,9 @@ namespace microcontrollerSide
                     CommunicaionForm communicaionForm = new CommunicaionForm();
                     MicroController.setUI(communicaionForm);
                     ExperimentController.SetForm(communicaionForm);
+                    PipeStream.InitionlisePipe();
 
-                    
+
                     this.BeginInvoke(new Action(() => {
                         this.Hide();
                         communicaionForm.Show();

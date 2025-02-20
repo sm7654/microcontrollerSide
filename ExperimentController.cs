@@ -30,9 +30,9 @@ namespace microcontrollerSide
                 string Frequency = experimentString[2]; // Frequency of engine
 
 
-                form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
+                //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
 
-                PipeStream.WriteToPipe(experName);
+                PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency}");
 
             }
             catch (Exception ex) { return; }
@@ -66,6 +66,10 @@ namespace microcontrollerSide
             string randomLastName = lastNames[random.Next(lastNames.Length)];
 
 
+            
+            
+            
+            
             string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;{curentTime};{time};{randomFirstName}";
             MicroController.SendToClient(ExperResults);
 

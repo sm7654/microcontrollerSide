@@ -52,9 +52,11 @@ namespace microcontrollerSide
             
             try
             {
-                pipeWriter.WriteLine($"{data}");    
+                pipeWriter.WriteLine($"{data}\n");    
+
+
             }
-            catch (Exception e){ }
+            catch (Exception e){ MicroController.PipeMessageRec("at WriteToPipe"); }
 
         }
 
@@ -68,23 +70,23 @@ namespace microcontrollerSide
                 while (true)
                 {
                     string Message = pipeReader.ReadLine();
-                    new Thread(() => MessageSelector(Message)).Start();
+                    if (Message != null && Message != "" && Message != "\n")
+                        new Thread(() => MessageSelector(Message)).Start();
                 }
             }
-            catch (Exception e) { }
+            catch (Exception e) { MicroController.PipeMessageRec("at ReadFromPipe"); }
         }
 
         private static void MessageSelector(string message)
         {
             try
             {
-                string DecryptedData = Encoding.UTF8.GetString(AesEncryption.DecryptData(Encoding.UTF8.GetBytes(message)));
-
+                string DecryptedData = message;
 
                 ExperimentController.MicroChipCommunication(DecryptedData);
 
 
-            } catch (Exception e) { }
+            } catch (Exception e) { MicroController.PipeMessageRec("At messege selector"); }
         }
 
 

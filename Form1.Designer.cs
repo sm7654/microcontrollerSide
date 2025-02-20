@@ -131,7 +131,7 @@ namespace microcontrollerSide
             | System.Windows.Forms.AnchorStyles.Left)));
             this.ControlletNameLabel.AutoSize = true;
             this.ControlletNameLabel.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ControlletNameLabel.Location = new System.Drawing.Point(160, 165);
+            this.ControlletNameLabel.Location = new System.Drawing.Point(135, 165);
             this.ControlletNameLabel.MaximumSize = new System.Drawing.Size(100, 0);
             this.ControlletNameLabel.MinimumSize = new System.Drawing.Size(0, 20);
             this.ControlletNameLabel.Name = "ControlletNameLabel";

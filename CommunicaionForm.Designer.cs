@@ -191,7 +191,10 @@ namespace microcontrollerSide
         {
             SendToServerButton.Click += SendToServerButton_Click;
         }
-
+        public void GG(string ff)
+        {
+            this.IsCLientConnectedLabel.Text = $"{ff}";
+        }
         public System.Windows.Forms.Label GetCLientStatusLabel()
         {
             return this.IsCLientConnectedLabel;
