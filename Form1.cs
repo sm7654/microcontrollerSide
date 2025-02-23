@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -90,7 +91,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("149.106.149.75"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("172.20.10.2"), 65000);
 
                 Conn.Connect(address);
 
@@ -103,8 +104,7 @@ namespace microcontrollerSide
 
 
                 RsaEncryption.SetServerPublicKey(Encoding.UTF8.GetString(ServerpublicKey, 0, bytesRec));
-
-
+                
                 // recive code
 
                 return (true, Conn);

@@ -36,13 +36,14 @@ namespace microcontrollerSide
 
                 new Thread(() => ReadFromPipe()).Start();
 
+                Console.WriteLine("connected");
                 return "connected";
 
 
             }
 
             catch (Exception e) {
-                return e.Message; }
+                Console.WriteLine("Not connected"); return e.Message; }
         }
 
         public static void WriteToPipe(string data)
@@ -82,7 +83,7 @@ namespace microcontrollerSide
             try
             {
                 string DecryptedData = message;
-
+                Console.WriteLine($"writing: {DecryptedData}");
                 ExperimentController.MicroChipCommunication(DecryptedData);
 
 

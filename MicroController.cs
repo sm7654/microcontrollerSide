@@ -80,7 +80,7 @@ namespace microcontrollerSide
                 int bytesRead = controller.Receive(bytes);
                 byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
                 controller.Receive(bytes1);
-                string[] Status = RsaEncryption.Decrypt(bytes1).Split(';');
+                string[] Status = RsaEncryption.Decrypt(bytes1).Split('&');
 
 
                 string returnCode = Status[1];
@@ -153,33 +153,28 @@ namespace microcontrollerSide
                     controller.Receive(buffer);
 
 
-                    PipeMessageRec("got the message");
                     if (buffer.Length >= ServerRole.Length)
                     {
                         try
                         {
                             byte[] data = RsaEncryption.DecryptToByte(buffer);
-                            PipeMessageRec("encrypted rsa");
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
                             {
                                 if (Is200Mesgae(data))
                                 {
                                     return;
                                 }
-                                PipeMessageRec("Server message");
                                 new Thread(() => ServerRelatedMessages(data)).Start();
                             }
                             else
                             {
-                                PipeMessageRec("Client message");
                                 new Thread(() => ClientRelatedMessages(data)).Start();
                             }
                         }
-                        catch (Exception e) { PipeMessageRec("Client message"); new Thread(() => ClientRelatedMessages(buffer)).Start(); }
+                        catch (Exception e) {  new Thread(() => ClientRelatedMessages(buffer)).Start(); }
                     }
                     else
                     {
-                        PipeMessageRec("cleint message");
 
                         new Thread(() => ClientRelatedMessages(buffer)).Start();
                     }
@@ -219,7 +214,7 @@ namespace microcontrollerSide
 
         private static bool Is200Mesgae(byte[] data)
         {
-            string[] bytes = Encoding.UTF8.GetString(data).Split(';');
+            string[] bytes = Encoding.UTF8.GetString(data).Split('&');
             if (bytes[1] == "200")
             {
                 ServerRelatedMessages(data);
@@ -233,6 +228,8 @@ namespace microcontrollerSide
             try
             {
                 string[] bytes = Encoding.UTF8.GetString(data).Split('&');
+
+                Console.WriteLine($"got from server: {bytes[2]}");
                 if (bytes[1] == "302")
                 {
                     clientConnected = false;
@@ -288,7 +285,7 @@ namespace microcontrollerSide
             {
                 
                 string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
-                
+                Console.WriteLine(Encoding.UTF8.GetString(AesEncryption.DecryptData(data)));
                 if (message[0] == "ERROR")
                 {
                     switch (message[1])
@@ -315,9 +312,9 @@ namespace microcontrollerSide
                     switch (message[0])
                     {
                         case "NEWXPERIMENT":
-                            PipeMessageRec($"Got {message[0]} {message[1]}");
+                            
                             ExperimentController.NewExperiment(message);
-                            SendToClient("EXPERREACHED");
+                            //SendToClient("EXPERREACHED");
 
                             break;
 

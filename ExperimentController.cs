@@ -33,6 +33,7 @@ namespace microcontrollerSide
                 //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
 
                 PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency}");
+                Console.WriteLine($"writing to pipe;");
 
             }
             catch (Exception ex) { return; }
@@ -71,6 +72,7 @@ namespace microcontrollerSide
             
             
             string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;{curentTime};{time};{randomFirstName}";
+            Console.WriteLine(ExperResults);
             MicroController.SendToClient(ExperResults);
 
 
