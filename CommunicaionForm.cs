@@ -24,9 +24,11 @@ namespace microcontrollerSide
         }
 
 
-        public CommunicaionForm()
+        public CommunicaionForm(string ConntrollerName)
         {
             InitializeComponent();
+
+            Idendifeir.Text = ConntrollerName;
 
         }
         
@@ -38,17 +40,7 @@ namespace microcontrollerSide
         
         private void SendToServerButton_Click(object sender, EventArgs e)
         {
-            ExperimentController.MicroChipCommunication("shai");
-
-            //     InitionlisePipe
-
-            return;
-            return;
-            byte[] excelBytes = FileHandler.GetFileBytes(@"C:\Users\shai\Downloads\Book1.xlsx");
-            if (excelBytes != null)
-            {
-                MicroController.SendToClient(excelBytes);
-            }
+            
         }
         
         public bool IsClientOnline()
@@ -66,6 +58,21 @@ namespace microcontrollerSide
             MicroController.DisconnectFromServer();
             Thread.Sleep(500);
             ClosingController.btnExit_Click();
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ExperimentController.MicroChipCommunication("Hello");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            AesEncryption.ChengeIv();
         }
     }
 }

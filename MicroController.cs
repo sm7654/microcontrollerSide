@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace microcontrollerSide
 {
@@ -23,7 +24,13 @@ namespace microcontrollerSide
         private static CommunicaionForm UI;
         private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
         private static bool clientConnected = false;
+        private static object communicationLock = new object();
 
+        public static bool IsClientConnected()
+        {
+            return clientConnected;
+        }
+        // Initialization and Setup Methods
         public static void SetMicroController(Socket controllerSock, string Roomcode)
         {
             controller = controllerSock;
@@ -31,48 +38,106 @@ namespace microcontrollerSide
             EncryptedToServerCode = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes(code));
             ClientVideoRequest = false;
 
-
             new Thread(() => ListenTo200Code()).Start();
         }
+
         public static void SetMicroController(Socket controllerSock)
         {
             controller = controllerSock;
         }
 
-        public static void setUI(CommunicaionForm form)//
+        public static void SetUI(CommunicaionForm form)
         {
             UI = form;
             UI.GetLabel().Text = code;
             UserStatus Control = new UserStatus(true, "Connected To Server");
             Control.SetRemoteEndPoint(controller.RemoteEndPoint.ToString());
             UI.GetDialogPanel().Controls.Add(Control);
-
         }
 
+        // Communication & Encryption Methods
+        public static void SendToClient(string data)
+        {
+            SendToClient(Encoding.UTF8.GetBytes(data));
+        }
+        
+        public static void SendToClient(byte[] data)
+        {
+            lock (communicationLock)
+            {
+                if (!clientConnected)
+                    return;
 
+                try
+                {
+                    byte[] EncryptedData = AesEncryption.EncryptedData(data);
+                    controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
+                    Thread.Sleep(250);
+                    controller.Send(EncryptedData);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
+            }
+        }
 
+        public static void SendToServer(string dataStr)
+        {
+            lock (communicationLock)
+            {
+                byte[] data = Encoding.UTF8.GetBytes($"{dataStr}");
+                data = RsaEncryption.EncryptToServer(ServerRole.Concat(data).ToArray());
+                controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
 
+                Thread.Sleep(400);
+                controller.Send(data);
+            }
+        }
 
+        public static void DisconnectFromServer()
+        {
+            SendToServer("&303");
+        }
+
+        // Video Methods (Commented Out)
         public static void VideoCasting()
         {
             /*
-             while (ClientVideoRequest){
+            while (ClientVideoRequest){
                 var source = Camera output;
-                byte[] videobyte = sourse.getVideo(2048); get 2048 chunks of video bytes
+                byte[] videobyte = sourse.getVideo(2048); // get 2048 chunks of video bytes
                 videobyte = AES.encrypt(videobytes);
                 byte[] FullyEncryptedVideo = EncryptedToServerCode + videobytes;
-                UdpServer.SendTo(FullyEncryptedVideo, (serverIP, 64000) );
-             }
-             */
+                UdpServer.SendTo(FullyEncryptedVideo, (serverIP, 64000));
+            }
+            */
         }
 
+        // Communication Flow Methods
+        private static void GetAESkeysANdStaertCommunication(string remoteEndPoint)
+        {
+            UI.BeginInvoke(new Action(() =>
+            {
+                UI.CLientIsOnline();
+                UserStatus Control = new UserStatus(true, "Client Connected!");
+                Control.SetRemoteEndPoint(remoteEndPoint);
+                UI.GetDialogPanel().Controls.Add(Control);
 
+                byte[] AESKey = new byte[128];
+                int bytesread = controller.Receive(AESKey);
 
+                byte[] AESIv = new byte[128];
+                bytesread = controller.Receive(AESIv);
 
+                AesEncryption.Addkeys(AESKey, AESIv);
 
+                clientConnected = true;
+                new Thread(() => StartClientCommunication_recv()).Start();
+            }));
+        }
 
-
-        public static void ListenTo200Code()
+        private static void ListenTo200Code()
         {
             try
             {
@@ -81,65 +146,28 @@ namespace microcontrollerSide
                 byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
                 controller.Receive(bytes1);
                 string[] Status = RsaEncryption.Decrypt(bytes1).Split('&');
-
-
                 string returnCode = Status[1];
-
 
                 if (returnCode == "200")
                 {
-                    UI.BeginInvoke(new Action(() =>
-                    {
-                        UI.CLientIsOnline();
-                        UserStatus Control = new UserStatus(true, "Client Connected!");
-                        Control.SetRemoteEndPoint(Status[2]);
-                        UI.GetDialogPanel().Controls.Add(Control);
-
-                        byte[] AESKey = new byte[128];
-                        int bytesread = controller.Receive(AESKey);
-
-
-                        byte[] AESIv = new byte[128];
-                        bytesread = controller.Receive(AESIv);
-
-                        AesEncryption.Addkeys(AESKey, AESIv);
-
-                        clientConnected = true;
-                        new Thread(() => StartClientCommunication_recv()).Start();
-
-
-                    }));
-
+                    GetAESkeysANdStaertCommunication(Status[2]);
                     return;
-                } else if (returnCode == "Shut")
+                }
+                else if (returnCode == "Shut")
                 {
-
-
                     controller.Close();
-                    UI.BeginInvoke(new Action(() =>
-                    {
-                        UI.Close();
-                        
-                    }));
+                    UI.BeginInvoke(new Action(() => { UI.Close(); }));
                     ClosingController.btnExit_Click();
                 }
             }
-            catch (Exception e) { controller.Close(); }
+            catch (Exception e)
+            {
+                controller.Close();
+            }
         }
-
-
-
-
-
-	/* 
-		this line was writen using linux os!!!!
-	*/
-
-
 
         private static void StartClientCommunication_recv()
         {
-
             while (controller.Connected && clientConnected)
             {
                 try
@@ -149,9 +177,7 @@ namespace microcontrollerSide
                     controller.ReceiveTimeout = 0;
                     int byteRec = controller.Receive(buffer);
                     buffer = new byte[int.Parse(Encoding.UTF8.GetString(buffer, 0, byteRec))];
-                    controller.ReceiveTimeout = 10000;
                     controller.Receive(buffer);
-
 
                     if (buffer.Length >= ServerRole.Length)
                     {
@@ -171,15 +197,15 @@ namespace microcontrollerSide
                                 new Thread(() => ClientRelatedMessages(data)).Start();
                             }
                         }
-                        catch (Exception e) {  new Thread(() => ClientRelatedMessages(buffer)).Start(); }
+                        catch (Exception e)
+                        {
+                            new Thread(() => ClientRelatedMessages(buffer)).Start();
+                        }
                     }
                     else
                     {
-
                         new Thread(() => ClientRelatedMessages(buffer)).Start();
                     }
-
-
                 }
                 catch (Exception e)
                 {
@@ -188,36 +214,13 @@ namespace microcontrollerSide
             }
         }
 
-    
-        public static void SendToClient(string data)
-        {
-            SendToClient(Encoding.UTF8.GetBytes(data));
-        }
-        public static void SendToClient(byte[] data)
-        {
-            if (!clientConnected)
-                return;
-            
-            try
-            {
-                byte[] EncryptedData = AesEncryption.EncryptedData(data);
-                controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
-                Thread.Sleep(200);
-                controller.Send(EncryptedData);
-
-
-            } catch (Exception e)
-            {
-                return;
-            }
-        }
-
+        // Message Handling Methods
         private static bool Is200Mesgae(byte[] data)
         {
             string[] bytes = Encoding.UTF8.GetString(data).Split('&');
             if (bytes[1] == "200")
             {
-                ServerRelatedMessages(data);
+                GetAESkeysANdStaertCommunication(bytes[2]);
                 return true;
             }
             return false;
@@ -229,144 +232,51 @@ namespace microcontrollerSide
             {
                 string[] bytes = Encoding.UTF8.GetString(data).Split('&');
 
-                Console.WriteLine($"got from server: {bytes[2]}");
                 if (bytes[1] == "302")
                 {
                     clientConnected = false;
                     UserStatus userStatus = new UserStatus(false, "Client disconnected");
-                    UI.BeginInvoke(new Action(() =>
-                    {
-                        UI.GetDialogPanel().Controls.Add(userStatus);
-                    }));
-
+                    UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(userStatus); }));
                 }
                 else if (bytes[1] == "200")
                 {
-                    UI.BeginInvoke(new Action(() =>
-                    {
-                        UI.CLientIsOnline();
-                        UserStatus Control = new UserStatus(true, "Client Connected!");
-                        Control.SetRemoteEndPoint(bytes[2]);
-                        UI.GetDialogPanel().Controls.Add(Control);
-
-                        byte[] AESKey = new byte[128];
-                        int bytesread = controller.Receive(AESKey);
-
-
-                        byte[] AESIv = new byte[128];
-                        bytesread = controller.Receive(AESIv);
-
-                        AesEncryption.Addkeys(AESKey, AESIv);
-
-                        clientConnected = true;
-                        new Thread(() => StartClientCommunication_recv()).Start();
-
-                    }));
+                    // Additional processing for 200 code if necessary
                 }
                 else if (bytes[1] == "Shut")
                 {
                     controller.Close();
-                    UI.BeginInvoke(new Action(() =>
-                    {
-                        UI.Close();
-
-                    }));
+                    UI.BeginInvoke(new Action(() => { UI.Close(); }));
                     ClosingController.btnExit_Click();
                 }
             }
             catch (Exception e) { }
         }
 
-
-
         private static void ClientRelatedMessages(byte[] data)
         {
             try
             {
-                
                 string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
                 Console.WriteLine(Encoding.UTF8.GetString(AesEncryption.DecryptData(data)));
-                if (message[0] == "ERROR")
+
+                switch (message[0])
                 {
-                    switch (message[1])
-                    {
-                        
+                    case "NEWXPERIMENT":
 
+                        Console.WriteLine("detected new exper");
+                        ExperimentController.NewExperiment(message);
+                        break;
 
-
-                        default: break;
-                    }
-
+                    default: break;
                 }
-                else if (message[0] == "SUCCESS")
-                {
-                    switch (message[1])
-                    {
-
-                        
-                        default: break;
-                    }
-                }
-                else
-                {
-                    switch (message[0])
-                    {
-                        case "NEWXPERIMENT":
-                            
-                            ExperimentController.NewExperiment(message);
-                            //SendToClient("EXPERREACHED");
-
-                            break;
-
-                        default: break;
-                    }
-                }
-                UI.BeginInvoke(new Action(() =>
-                {
-                    UI.EnableSendAction();
-                }));
             }
-            catch (Exception e)
-            { }
+            catch (Exception e) { }
         }
 
-
+        // UI Helper Methods
         public static void PipeMessageRec(string g)
         {
-            
-            UI.BeginInvoke(new Action(() =>
-            {
-                UI.GG(g);
-            }));
+            UI.BeginInvoke(new Action(() => { UI.GG(g); }));
         }
-
-        public static void SendToServer(byte[] data)
-        {
-            data = RsaEncryption.EncryptToServer(ServerRole.Concat(data).ToArray());
-
-            controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
-
-            Thread.Sleep(400);
-            controller.Send(data);
-        }
-
-
-        public static void DisconnectFromServer()
-        {
-
-
-            byte[] disMessage = Encoding.UTF8.GetBytes("&303");
-
-            
-
-
-
-
-
-            //303 --> disconnected code
-            //controller.Send("303");
-        }
-
-
     }
 }

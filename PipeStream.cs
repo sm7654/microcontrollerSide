@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace microcontrollerSide
 {
@@ -18,14 +19,18 @@ namespace microcontrollerSide
         private static StreamWriter pipeWriter = null;
         private static StreamReader pipeReader = null;
 
-
-        public static string InitionlisePipe()
+        public static bool InitionlisePipe()
+        {
+            return InitionlisePipe(pipeLocation);
+        }
+        public static bool InitionlisePipe(string path)
         {
             if (IsConnected)
-                return "connected";
-            
+                return true;
+                       
             try
             {
+                pipeLocation = path;
                 FileStream pipe = new FileStream(pipeLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                 StreamReader streamReader = new StreamReader(pipe);
                 StreamWriter streamWriter = new StreamWriter(pipe);
@@ -37,13 +42,13 @@ namespace microcontrollerSide
                 new Thread(() => ReadFromPipe()).Start();
 
                 Console.WriteLine("connected");
-                return "connected";
+                return true;
 
 
             }
 
             catch (Exception e) {
-                Console.WriteLine("Not connected"); return e.Message; }
+                Console.WriteLine("Not connected"); return false; }
         }
 
         public static void WriteToPipe(string data)

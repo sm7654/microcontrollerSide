@@ -22,8 +22,9 @@ namespace microcontrollerSide
         }
         public static void NewExperiment(string[] experimentString)
         {
+            Console.WriteLine($"writing to pipe;");
             if (!(experimentString.Length > 0))
-                MicroController.SendToClient("ERROR;406");
+                //MicroController.SendToClient("ERROR;406");
             try
             {
                 string experName = experimentString[1]; // Fxperiment name
@@ -57,21 +58,20 @@ namespace microcontrollerSide
             string cameraSpeed = random.Next(1, 100).ToString();
             string innerPressure = random.Next(10, 100).ToString();
             string humidity = random.Next(0, 100).ToString();
-            string time = random.Next(1, 60).ToString() + "sec";
+            string time = random.Next(1, 60).ToString();
 
             string[] firstNames = { "Aria", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason", "Isabella", "Logan" };
             string[] lastNames = { "Silverwood", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez" };
 
             string randomFirstName = firstNames[random.Next(firstNames.Length)];
-            randomFirstName = name;
             string randomLastName = lastNames[random.Next(lastNames.Length)];
 
 
+            randomFirstName = name;
             
             
             
-            
-            string ExperResults = $"EXPERIMENT_RESULTS;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;{curentTime};{time};{randomFirstName}";
+            string ExperResults = $"EXPERIMENT_RESULTS;Name:{randomFirstName}|;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;Duration:{time}|sec;Date:{curentTime}|";
             Console.WriteLine(ExperResults);
             MicroController.SendToClient(ExperResults);
 

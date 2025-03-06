@@ -14,11 +14,7 @@ namespace microcontrollerSide
         [STAThread]
         static void Main()
         {
-            Process[] processes = Process.GetProcessesByName("microontrollerSide");
-            foreach (Process process in processes)
-            {
-                try { process.Kill(); } catch{ }
-            }
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

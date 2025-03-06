@@ -27,6 +27,7 @@ namespace microcontrollerSide
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
+            
             if (ControllerName.Text == "")
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
@@ -43,13 +44,17 @@ namespace microcontrollerSide
                     byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}"));
 
                     Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
-                    Thread.Sleep(200);
+                    Thread.Sleep(250);
                     Conn.Send(recognitionBytes);
 
 
-                    byte[] roomCode = new byte[128];
-                    int length = Conn.Receive(roomCode);
 
+
+                    byte[] roomCode = new byte[128];
+                    
+                    int length = Conn.Receive(roomCode);
+                    length = Conn.Receive(roomCode);
+                    length = Conn.Receive(roomCode);
 
                     string Code = RsaEncryption.Decrypt(roomCode);
                     if (length <= 0 || Code == "500")
@@ -58,8 +63,8 @@ namespace microcontrollerSide
 
 
                     MicroController.SetMicroController(Conn, Code);
-                    CommunicaionForm communicaionForm = new CommunicaionForm();
-                    MicroController.setUI(communicaionForm);
+                    CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text);
+                    MicroController.SetUI(communicaionForm);
                     ExperimentController.SetForm(communicaionForm);
                     PipeStream.InitionlisePipe();
 
@@ -91,7 +96,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("172.20.10.2"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.5"), 65000);
 
                 Conn.Connect(address);
 

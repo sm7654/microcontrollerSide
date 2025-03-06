@@ -18,7 +18,6 @@ namespace microcontrollerSide
         public static byte[] GenerateKeys()
         {
             Service = RSA.Create();
-            Service.KeySize = 1024;
             publicKey = Service.ToXmlString(false);
             privateKey = Service.ToXmlString(true);
             return Encoding.UTF8.GetBytes(publicKey);
@@ -26,25 +25,23 @@ namespace microcontrollerSide
 
         public static string Decrypt(byte[] data)
         {
-            Service = RSA.Create();
-            Service.FromXmlString(privateKey);
-
-            return Encoding.UTF8.GetString(Service.Decrypt(data, RSAEncryptionPadding.Pkcs1));
+            byte[] bytes = Service.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+            return Encoding.UTF8.GetString(bytes);
         }
         public static byte[] DecryptToByte(byte[] data)
         {
-            Service = RSA.Create();
-            Service.FromXmlString(privateKey);
-
+            
             return Service.Decrypt(data, RSAEncryptionPadding.Pkcs1);
         }
 
         public static byte[] EncryptToServer(byte[] data)
         {
-            Service = RSA.Create();
-            Service.FromXmlString(ServerPublickey);
+            using (RSA rsa = RSA.Create()) {
+                rsa.FromXmlString(ServerPublickey);
+                return rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+            }
 
-            return Service.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+            
         }
 
         public static void SetServerPublicKey(string Temppublickey)

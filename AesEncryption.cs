@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace microcontrollerSide
 {
@@ -18,8 +21,35 @@ namespace microcontrollerSide
         {
             aesKey = RsaEncryption.DecryptToByte(key);
             aesIV = RsaEncryption.DecryptToByte(Iv);
+           new Thread(ChengeIv).Start();
+        }
+        public static int GetRandomDelay()
+        {
+            Random _random = new Random();
+            
+            return _random.Next(1000 * 60 * 3, 1000 * 60 * 4); // Random time between 3-min to 4-min (inclusive)
         }
 
+        public static void ChengeIv()
+        {
+            //while (MicroController.IsClientConnected())
+            //{
+                //int delay = GetRandomDelay();
+                //Console.WriteLine(delay);
+                //Thread.Sleep(delay);
+                byte[] AESTemp;
+                using (Aes aesServise = Aes.Create())
+                {
+                    aesServise.KeySize = 192;
+                    AESTemp = aesServise.IV;
+                }
+                byte[] bytes = Encoding.UTF8.GetBytes("CHANGEIV;").Concat(AESTemp).ToArray();
+
+                MessageBox.Show(Convert.ToBase64String(AESTemp));
+                MicroController.SendToClient(bytes);
+                aesIV = AESTemp;
+            //}
+        }
 
         public static byte[] EncryptedData(byte[] data)
         {
