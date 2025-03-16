@@ -34,6 +34,8 @@ namespace microcontrollerSide
             new Thread(() =>
             {
                 (bool status, Socket Conn) = CreateConn();
+                
+                Conn.Send(new byte[128]);
 
 
                 if (status)
@@ -53,8 +55,7 @@ namespace microcontrollerSide
                     byte[] roomCode = new byte[128];
                     
                     int length = Conn.Receive(roomCode);
-                    length = Conn.Receive(roomCode);
-                    length = Conn.Receive(roomCode);
+                    
 
                     string Code = RsaEncryption.Decrypt(roomCode);
                     if (length <= 0 || Code == "500")
@@ -96,20 +97,20 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.5"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.11"), 65000);
 
                 Conn.Connect(address);
 
-                
                 Conn.Send(RsaEncryption.GenerateKeys());
-
 
                 byte[] ServerpublicKey = new byte[1024];
                 int bytesRec = Conn.Receive(ServerpublicKey);
 
-
                 RsaEncryption.SetServerPublicKey(Encoding.UTF8.GetString(ServerpublicKey, 0, bytesRec));
-                
+
+
+                Conn.Receive(ServerpublicKey);
+                Conn.Receive(ServerpublicKey);
                 // recive code
 
                 return (true, Conn);
@@ -124,6 +125,11 @@ namespace microcontrollerSide
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             ClosingController.btnExit_Click();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PipeStream.WriteToPipe("hi Roy Morris");
         }
     }
 }

@@ -14,13 +14,29 @@ namespace microcontrollerSide
     public partial class UserStatus : UserControl
     {
         private static string RemoteEndPoint = "";
+        public UserStatus(string Text)
+        {
+
+            InitializeComponent();
+            UserConectivityLabel.Text = Text;
+            DateTime localDate = DateTime.Now;
+            string israelDate = localDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            string israelTime = localDate.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+
+            TimeLabel.Text = $"{israelDate} {israelTime}";
+
+            UserConnectedStatus.BackColor = Color.DodgerBlue;
+
+            panel2.BackColor = Color.Transparent;
+        }
+
         public UserStatus(bool status, string Text)
         {
             InitializeComponent();
             DateTime localDate = DateTime.Now;
             string israelDate = localDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            // Format the time in 24-hour format (HH:mm:ss)
             string israelTime = localDate.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
             TimeLabel.Text = $"{israelDate} {israelTime}";
@@ -34,8 +50,11 @@ namespace microcontrollerSide
 
         public void SetRemoteEndPoint(string EN)
         {
-            RemoteEndPoint = EN;
-            ClientEndPointLael.Text = RemoteEndPoint;
+            ClientEndPointLael.Text = EN;
+        }
+        public void SetDetails(string de)
+        {
+            ClientEndPointLael.Text = de;
         }
 
 

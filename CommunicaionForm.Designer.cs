@@ -1,6 +1,8 @@
 ﻿using ServerSide;
 using System.Net.Sockets;
-
+using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using System.Drawing;
 namespace microcontrollerSide
 {
     partial class CommunicaionForm
@@ -38,8 +40,8 @@ namespace microcontrollerSide
             this.Header = new System.Windows.Forms.Panel();
             this.Idendifeir = new System.Windows.Forms.Label();
             this.Background = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.Header.SuspendLayout();
             this.Background.SuspendLayout();
@@ -62,17 +64,18 @@ namespace microcontrollerSide
             this.IsCLientConnectedLabel.AutoSize = true;
             this.IsCLientConnectedLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.IsCLientConnectedLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.IsCLientConnectedLabel.Location = new System.Drawing.Point(940, 586);
+            this.IsCLientConnectedLabel.Location = new System.Drawing.Point(1002, 586);
             this.IsCLientConnectedLabel.Name = "IsCLientConnectedLabel";
+            this.IsCLientConnectedLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.IsCLientConnectedLabel.Size = new System.Drawing.Size(239, 23);
             this.IsCLientConnectedLabel.TabIndex = 7;
             this.IsCLientConnectedLabel.Text = "Waiting for client to connect...";
             this.IsCLientConnectedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.IsCLientConnectedLabel.Click += new System.EventHandler(this.IsCLientConnectedLabel_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.DialogPanel);
             this.panel1.Location = new System.Drawing.Point(56, 70);
             this.panel1.Name = "panel1";
@@ -82,26 +85,27 @@ namespace microcontrollerSide
             // DialogPanel
             // 
             this.DialogPanel.AutoScroll = true;
-            this.DialogPanel.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.DialogPanel.BackColor = System.Drawing.Color.White;
+            this.DialogPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DialogPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DialogPanel.Location = new System.Drawing.Point(0, 0);
             this.DialogPanel.Name = "DialogPanel";
-            this.DialogPanel.Padding = new System.Windows.Forms.Padding(20);
-            this.DialogPanel.Size = new System.Drawing.Size(1183, 498);
+            this.DialogPanel.Padding = new System.Windows.Forms.Padding(25, 8, 8, 8);
+            this.DialogPanel.Size = new System.Drawing.Size(1185, 500);
             this.DialogPanel.TabIndex = 0;
             this.DialogPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DialogPanel_Paint);
             // 
             // Header
             // 
-            this.Header.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(75)))), ((int)(((byte)(100)))));
+            this.Header.BackColor = System.Drawing.Color.Transparent;
             this.Header.Controls.Add(this.Idendifeir);
             this.Header.Controls.Add(this.RoomCodeTxBox);
             this.Header.Dock = System.Windows.Forms.DockStyle.Top;
-            this.Header.ForeColor = System.Drawing.Color.White;
             this.Header.Location = new System.Drawing.Point(0, 0);
             this.Header.Name = "Header";
             this.Header.Size = new System.Drawing.Size(1280, 50);
             this.Header.TabIndex = 9;
+            this.Header.Paint += new System.Windows.Forms.PaintEventHandler(this.set_background);
             // 
             // Idendifeir
             // 
@@ -117,7 +121,7 @@ namespace microcontrollerSide
             // 
             // Background
             // 
-            this.Background.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(235)))), ((int)(((byte)(235)))));
+            this.Background.BackColor = System.Drawing.Color.White;
             this.Background.Controls.Add(this.button2);
             this.Background.Controls.Add(this.button1);
             this.Background.Controls.Add(this.IsCLientConnectedLabel);
@@ -127,25 +131,26 @@ namespace microcontrollerSide
             this.Background.Size = new System.Drawing.Size(1280, 649);
             this.Background.TabIndex = 10;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(57, 586);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(172, 586);
+            this.button2.Location = new System.Drawing.Point(216, 588);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(90, 23);
             this.button2.TabIndex = 9;
             this.button2.Text = "Change IV";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(57, 588);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(153, 23);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "send test experiment";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CommunicaionForm
             // 
@@ -206,5 +211,23 @@ namespace microcontrollerSide
         private System.Windows.Forms.Panel Background;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+
+
+
+        private void set_background(object sender, PaintEventArgs e)
+        {
+            // Get the graphics object
+            Graphics graphics = e.Graphics;
+
+            // Create a rectangle that fills the entire form
+            Rectangle gradientRectangle = new Rectangle(0, 0, Width, Height);
+
+            // Create the gradient brush: from dark red to orange-red (professional colors for blocking or warning)
+            Brush brush = new LinearGradientBrush(gradientRectangle, Color.FromArgb(20, 40, 60), Color.FromArgb(100, 180, 220), 45f);
+
+
+            // Fill the rectangle with the gradient
+            graphics.FillRectangle(brush, gradientRectangle);
+        }
     }
 }

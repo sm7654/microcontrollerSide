@@ -18,9 +18,10 @@ namespace microcontrollerSide
         private static bool IsConnected = false;
         private static StreamWriter pipeWriter = null;
         private static StreamReader pipeReader = null;
-
+        
         public static bool InitionlisePipe()
         {
+
             return InitionlisePipe(pipeLocation);
         }
         public static bool InitionlisePipe(string path)
@@ -88,7 +89,7 @@ namespace microcontrollerSide
             try
             {
                 string DecryptedData = message;
-                Console.WriteLine($"writing: {DecryptedData}");
+                Console.WriteLine($"got from pipe: {DecryptedData}");
                 ExperimentController.MicroChipCommunication(DecryptedData);
 
 

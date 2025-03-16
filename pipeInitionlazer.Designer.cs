@@ -47,7 +47,7 @@
             // PipePath
             // 
             this.PipePath.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.PipePath.Location = new System.Drawing.Point(27, 46);
+            this.PipePath.Location = new System.Drawing.Point(25, 46);
             this.PipePath.Name = "PipePath";
             this.PipePath.Size = new System.Drawing.Size(240, 30);
             this.PipePath.TabIndex = 1;

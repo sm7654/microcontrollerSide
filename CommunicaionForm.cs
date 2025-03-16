@@ -74,5 +74,19 @@ namespace microcontrollerSide
         {
             AesEncryption.ChengeIv();
         }
+
+        private void IsCLientConnectedLabel_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Header_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            PipeStream.WriteToPipe("hi Roy Morris");
+        }
     }
 }

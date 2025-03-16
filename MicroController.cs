@@ -122,6 +122,7 @@ namespace microcontrollerSide
                 UI.CLientIsOnline();
                 UserStatus Control = new UserStatus(true, "Client Connected!");
                 Control.SetRemoteEndPoint(remoteEndPoint);
+                
                 UI.GetDialogPanel().Controls.Add(Control);
 
                 byte[] AESKey = new byte[128];
@@ -265,6 +266,13 @@ namespace microcontrollerSide
 
                         Console.WriteLine("detected new exper");
                         ExperimentController.NewExperiment(message);
+                        UserStatus Control = new UserStatus("New Expreriment");
+                        Control.SetDetails($"Name: {message[1]}      Frequency: {message[2]}");
+
+
+                        UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
+                        
+
                         break;
 
                     default: break;
