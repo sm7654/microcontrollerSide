@@ -39,7 +39,6 @@ namespace microcontrollerSide
             this.ControllerName = new System.Windows.Forms.TextBox();
             this.ControlletNameLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -51,7 +50,7 @@ namespace microcontrollerSide
             this.panel1.Controls.Add(this.tableLayoutPanel1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1249, 554);
             this.panel1.TabIndex = 5;
@@ -66,7 +65,7 @@ namespace microcontrollerSide
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -77,14 +76,13 @@ namespace microcontrollerSide
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
-            this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.ConnectionErrorLabel);
             this.panel2.Controls.Add(this.ConnectButton);
             this.panel2.Controls.Add(this.ControllerName);
             this.panel2.Controls.Add(this.ControlletNameLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(378, 4);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(867, 546);
             this.panel2.TabIndex = 0;
@@ -93,12 +91,13 @@ namespace microcontrollerSide
             // 
             this.ConnectionErrorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ConnectionErrorLabel.AutoSize = true;
-            this.ConnectionErrorLabel.Location = new System.Drawing.Point(4, 517);
+            this.ConnectionErrorLabel.Location = new System.Drawing.Point(4, 530);
             this.ConnectionErrorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ConnectionErrorLabel.Name = "ConnectionErrorLabel";
-            this.ConnectionErrorLabel.Size = new System.Drawing.Size(13, 16);
+            this.ConnectionErrorLabel.Size = new System.Drawing.Size(41, 16);
             this.ConnectionErrorLabel.TabIndex = 5;
-            this.ConnectionErrorLabel.Text = "  ";
+            this.ConnectionErrorLabel.Text = "  ____";
+            this.ConnectionErrorLabel.Click += new System.EventHandler(this.ConnectionErrorLabel_Click);
             // 
             // ConnectButton
             // 
@@ -137,7 +136,7 @@ namespace microcontrollerSide
             | System.Windows.Forms.AnchorStyles.Left)));
             this.ControlletNameLabel.AutoSize = true;
             this.ControlletNameLabel.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ControlletNameLabel.Location = new System.Drawing.Point(180, 203);
+            this.ControlletNameLabel.Location = new System.Drawing.Point(212, 205);
             this.ControlletNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ControlletNameLabel.MaximumSize = new System.Drawing.Size(133, 0);
             this.ControlletNameLabel.MinimumSize = new System.Drawing.Size(0, 25);
@@ -153,22 +152,12 @@ namespace microcontrollerSide
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(4, 4);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(366, 546);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(426, 329);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(108, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Send to pipe";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -177,9 +166,9 @@ namespace microcontrollerSide
             this.ClientSize = new System.Drawing.Size(1249, 554);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Initialization Connections";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
@@ -200,7 +189,6 @@ namespace microcontrollerSide
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label ConnectionErrorLabel;
-        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -18,9 +18,6 @@ namespace microcontrollerSide
     static class MicroController
     {
         private static Socket controller;
-        private static string code;
-        private static byte[] EncryptedToServerCode;
-        private static bool ClientVideoRequest;
         private static CommunicaionForm UI;
         private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
         private static bool clientConnected = false;
@@ -30,26 +27,16 @@ namespace microcontrollerSide
         {
             return clientConnected;
         }
-        // Initialization and Setup Methods
-        public static void SetMicroController(Socket controllerSock, string Roomcode)
-        {
-            controller = controllerSock;
-            code = Roomcode;
-            EncryptedToServerCode = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes(code));
-            ClientVideoRequest = false;
-
-            new Thread(() => ListenTo200Code()).Start();
-        }
-
+       
         public static void SetMicroController(Socket controllerSock)
         {
             controller = controllerSock;
+            new Thread(ListenTo200Code).Start();            
         }
 
         public static void SetUI(CommunicaionForm form)
         {
             UI = form;
-            UI.GetLabel().Text = code;
             UserStatus Control = new UserStatus(true, "Connected To Server");
             Control.SetRemoteEndPoint(controller.RemoteEndPoint.ToString());
             UI.GetDialogPanel().Controls.Add(Control);
@@ -94,32 +81,12 @@ namespace microcontrollerSide
                 controller.Send(data);
             }
         }
-
-        public static void DisconnectFromServer()
-        {
-            SendToServer("&303");
-        }
-
-        // Video Methods (Commented Out)
-        public static void VideoCasting()
-        {
-            /*
-            while (ClientVideoRequest){
-                var source = Camera output;
-                byte[] videobyte = sourse.getVideo(2048); // get 2048 chunks of video bytes
-                videobyte = AES.encrypt(videobytes);
-                byte[] FullyEncryptedVideo = EncryptedToServerCode + videobytes;
-                UdpServer.SendTo(FullyEncryptedVideo, (serverIP, 64000));
-            }
-            */
-        }
-
+       
         // Communication Flow Methods
         private static void GetAESkeysANdStaertCommunication(string remoteEndPoint)
         {
             UI.BeginInvoke(new Action(() =>
             {
-                UI.CLientIsOnline();
                 UserStatus Control = new UserStatus(true, "Client Connected!");
                 Control.SetRemoteEndPoint(remoteEndPoint);
                 
@@ -265,7 +232,7 @@ namespace microcontrollerSide
                     case "NEWXPERIMENT":
 
                         Console.WriteLine("detected new exper");
-                        ExperimentController.NewExperiment(message);
+                        SendToPipeNewExperiment(message);
                         UserStatus Control = new UserStatus("New Expreriment");
                         Control.SetDetails($"Name: {message[1]}      Frequency: {message[2]}");
 
@@ -281,10 +248,60 @@ namespace microcontrollerSide
             catch (Exception e) { }
         }
 
-        // UI Helper Methods
-        public static void PipeMessageRec(string g)
+        public static void SendToPipeNewExperiment(string[] experimentString)
         {
-            UI.BeginInvoke(new Action(() => { UI.GG(g); }));
+
+            if (!(experimentString.Length > 0))
+                return;
+            Console.WriteLine($"writing to pipe;");
+            try
+            {
+                string experName = experimentString[1]; // Fxperiment name
+                string Frequency = experimentString[2]; // Frequency of engine
+
+                Console.WriteLine($"{experName}{Frequency}");
+                //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
+
+                PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency}");
+                Console.WriteLine($"writing to pipe;");
+
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message); ; return; }
         }
+        public static void MicroChipCommunication(string name)
+        {
+            DateTime curentDate = DateTime.Now;
+            DateTime dateOnly = curentDate.Date;
+            Random random = new Random();
+            string curentTime = dateOnly.ToString("yyyy-MM-dd");
+            string deltaSpeed = random.Next(1, 100).ToString();
+            string temp = random.Next(-30, 50).ToString();
+            string cameraSpeed = random.Next(1, 100).ToString();
+            string innerPressure = random.Next(10, 100).ToString();
+            string humidity = random.Next(0, 100).ToString();
+            string time = random.Next(1, 60).ToString();
+
+            string[] firstNames = { "Aria", "Liam", "Olivia", "Noah", "Ava", "Ethan", "Sophia", "Mason", "Isabella", "Logan" };
+            string[] lastNames = { "Silverwood", "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez" };
+
+            string randomFirstName = firstNames[random.Next(firstNames.Length)];
+            string randomLastName = lastNames[random.Next(lastNames.Length)];
+
+
+            randomFirstName = name;
+
+
+
+            string ExperResults = $"EXPERIMENT_RESULTS;Name:{randomFirstName}|;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;Duration:{time}|sec;Date:{curentTime}|";
+            Console.WriteLine(ExperResults);
+            SendToClient(ExperResults);
+
+        }
+
+        public static void DisconnectFromServer()
+        {
+            SendToServer("&303");
+        }
+
     }
 }

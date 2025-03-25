@@ -1,40 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace microcontrollerSide
 {
     static class PipeStream
     {
-        private static string pipeLocation = "/tmp/ProgramFolder/pipe";
+        private static string ReaderPipeLocation = "/tmp/ProgramFolder/Rpipe";
+        private static string WriterPipeLocation = "/tmp/ProgramFolder/Wpipe";
         private static string pipeFolder = "/tmp/ProgramFolder";
         private static bool IsConnected = false;
         private static StreamWriter pipeWriter = null;
         private static StreamReader pipeReader = null;
         
+        
         public static bool InitionlisePipe()
-        {
-
-            return InitionlisePipe(pipeLocation);
-        }
-        public static bool InitionlisePipe(string path)
         {
             if (IsConnected)
                 return true;
                        
             try
             {
-                pipeLocation = path;
-                FileStream pipe = new FileStream(pipeLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamReader streamReader = new StreamReader(pipe);
-                StreamWriter streamWriter = new StreamWriter(pipe);
+                
+
+                FileStream Rpipe = new FileStream(ReaderPipeLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamReader streamReader = new StreamReader(Rpipe);
+                FileStream Wpipe = new FileStream(WriterPipeLocation, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamWriter streamWriter = new StreamWriter(Wpipe);
+
                 pipeWriter = streamWriter;
                 IsConnected = true;
                 pipeWriter.AutoFlush = true;
@@ -49,7 +42,7 @@ namespace microcontrollerSide
             }
 
             catch (Exception e) {
-                Console.WriteLine("Not connected"); return false; }
+                Console.WriteLine($"{e.Message}"); return false; }
         }
 
         public static void WriteToPipe(string data)
@@ -59,11 +52,11 @@ namespace microcontrollerSide
             
             try
             {
-                pipeWriter.WriteLine($"{data}\n");    
-
+                pipeWriter.WriteLine($"{data}\n");
+                Console.WriteLine("Sent The message");
 
             }
-            catch (Exception e){ MicroController.PipeMessageRec("at WriteToPipe"); }
+            catch (Exception e){ Console.WriteLine("error"); }
 
         }
 
@@ -76,34 +69,29 @@ namespace microcontrollerSide
             {
                 while (true)
                 {
+                    Thread.Sleep(20);
                     string Message = pipeReader.ReadLine();
                     if (Message != null && Message != "" && Message != "\n")
                         new Thread(() => MessageSelector(Message)).Start();
                 }
             }
-            catch (Exception e) { MicroController.PipeMessageRec("at ReadFromPipe"); }
+            catch (Exception e) { }
         }
 
         private static void MessageSelector(string message)
         {
             try
             {
-                string DecryptedData = message;
-                Console.WriteLine($"got from pipe: {DecryptedData}");
-                ExperimentController.MicroChipCommunication(DecryptedData);
+                if (message.Split(';')[0] == "EXPERIMENT_RESULTS")
+                {
+                    Console.WriteLine($"got from pipe: {message}");
+                    MicroController.MicroChipCommunication(message); // delete and send diractly to SendToClient
+                }
 
 
-            } catch (Exception e) { MicroController.PipeMessageRec("At messege selector"); }
+            } catch (Exception e) { }
         }
-
-
-
-
-
-        public static string GetPipeLocation()
-        {
-            return pipeLocation;
-        }
+        
         public static bool IsPipeConnected()
         {
             return IsConnected;

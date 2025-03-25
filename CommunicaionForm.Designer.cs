@@ -34,17 +34,13 @@ namespace microcontrollerSide
         private void InitializeComponent()
         {
             this.RoomCodeTxBox = new System.Windows.Forms.Label();
-            this.IsCLientConnectedLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.DialogPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.Header = new System.Windows.Forms.Panel();
             this.Idendifeir = new System.Windows.Forms.Label();
             this.Background = new System.Windows.Forms.Panel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.Header.SuspendLayout();
-            this.Background.SuspendLayout();
             this.SuspendLayout();
             // 
             // RoomCodeTxBox
@@ -57,21 +53,6 @@ namespace microcontrollerSide
             this.RoomCodeTxBox.Size = new System.Drawing.Size(125, 28);
             this.RoomCodeTxBox.TabIndex = 5;
             this.RoomCodeTxBox.Text = "Room Code:";
-            // 
-            // IsCLientConnectedLabel
-            // 
-            this.IsCLientConnectedLabel.AutoEllipsis = true;
-            this.IsCLientConnectedLabel.AutoSize = true;
-            this.IsCLientConnectedLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.IsCLientConnectedLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.IsCLientConnectedLabel.Location = new System.Drawing.Point(1002, 586);
-            this.IsCLientConnectedLabel.Name = "IsCLientConnectedLabel";
-            this.IsCLientConnectedLabel.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.IsCLientConnectedLabel.Size = new System.Drawing.Size(239, 23);
-            this.IsCLientConnectedLabel.TabIndex = 7;
-            this.IsCLientConnectedLabel.Text = "Waiting for client to connect...";
-            this.IsCLientConnectedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IsCLientConnectedLabel.Click += new System.EventHandler(this.IsCLientConnectedLabel_Click);
             // 
             // panel1
             // 
@@ -93,7 +74,6 @@ namespace microcontrollerSide
             this.DialogPanel.Padding = new System.Windows.Forms.Padding(25, 8, 8, 8);
             this.DialogPanel.Size = new System.Drawing.Size(1185, 500);
             this.DialogPanel.TabIndex = 0;
-            this.DialogPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.DialogPanel_Paint);
             // 
             // Header
             // 
@@ -122,35 +102,11 @@ namespace microcontrollerSide
             // Background
             // 
             this.Background.BackColor = System.Drawing.Color.White;
-            this.Background.Controls.Add(this.button2);
-            this.Background.Controls.Add(this.button1);
-            this.Background.Controls.Add(this.IsCLientConnectedLabel);
             this.Background.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Background.Location = new System.Drawing.Point(0, 0);
             this.Background.Name = "Background";
             this.Background.Size = new System.Drawing.Size(1280, 649);
             this.Background.TabIndex = 10;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(216, 588);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(90, 23);
-            this.button2.TabIndex = 9;
-            this.button2.Text = "Change IV";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(57, 588);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(153, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "send test experiment";
-            this.button1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CommunicaionForm
             // 
@@ -169,34 +125,13 @@ namespace microcontrollerSide
             this.panel1.ResumeLayout(false);
             this.Header.ResumeLayout(false);
             this.Header.PerformLayout();
-            this.Background.ResumeLayout(false);
-            this.Background.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private System.Windows.Forms.Label RoomCodeTxBox;
-        private System.Windows.Forms.Label IsCLientConnectedLabel;
-        public System.Windows.Forms.Label GetLabel()
-        {
-            return this.RoomCodeTxBox;
-        }
-
-        public void GG(string ff)
-        {
-            this.IsCLientConnectedLabel.Text = $"{ff}";
-        }
-        public System.Windows.Forms.Label GetCLientStatusLabel()
-        {
-            return this.IsCLientConnectedLabel;
-        }
-        public void CLientIsOnline()
-        {
-            this.CLientOnline = true;
-            this.IsCLientConnectedLabel.Text = $"Client Is Online.";
-
-        }
+       
         
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.FlowLayoutPanel DialogPanel;
@@ -209,8 +144,6 @@ namespace microcontrollerSide
         private System.Windows.Forms.Panel Header;
         private System.Windows.Forms.Label Idendifeir;
         private System.Windows.Forms.Panel Background;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
 
 
 

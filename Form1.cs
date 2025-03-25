@@ -17,7 +17,8 @@ namespace microcontrollerSide
         {
             RsaEncryption.GenerateKeys();
             InitializeComponent();
-
+            if(!PipeStream.InitionlisePipe())
+                ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -27,7 +28,11 @@ namespace microcontrollerSide
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            
+            if (!PipeStream.IsPipeConnected())
+            {
+                ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
+                return;
+            }
             if (ControllerName.Text == "")
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
@@ -43,7 +48,7 @@ namespace microcontrollerSide
 
                     // generate keys and returns the public key and send it do server
 
-                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}"));
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.ASCII.GetBytes($"Esp&{ControllerName.Text}"));
 
                     Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
                     Thread.Sleep(250);
@@ -63,17 +68,16 @@ namespace microcontrollerSide
                     
 
 
-                    MicroController.SetMicroController(Conn, Code);
-                    CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text);
+                    MicroController.SetMicroController(Conn);
+                    CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text, Code);
+                    
                     MicroController.SetUI(communicaionForm);
-                    ExperimentController.SetForm(communicaionForm);
                     PipeStream.InitionlisePipe();
 
 
                     this.BeginInvoke(new Action(() => {
                         this.Hide();
                         communicaionForm.Show();
-
                     }));
                     
 
@@ -127,9 +131,11 @@ namespace microcontrollerSide
             ClosingController.btnExit_Click();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        
+
+        private void ConnectionErrorLabel_Click(object sender, EventArgs e)
         {
-            PipeStream.WriteToPipe("hi Roy Morris");
+
         }
     }
 }

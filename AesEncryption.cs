@@ -27,20 +27,22 @@ namespace microcontrollerSide
         {
             Random _random = new Random();
             
-            return _random.Next(1000 * 60 * 3, 1000 * 60 * 4); // Random time between 3-min to 4-min (inclusive)
+            return _random.Next(1000 * 60 * 1, 1000 * 60 * 2); // Random time between 3-min to 4-min (inclusive)
         }
 
         public static void ChengeIv()
         {
-            //while (MicroController.IsClientConnected())
-            //{
-                //int delay = GetRandomDelay();
-                //Console.WriteLine(delay);
-                //Thread.Sleep(delay);
+            while (MicroController.IsClientConnected())
+            {
+                int delay = GetRandomDelay();
+                Console.WriteLine(delay);
+                Thread.Sleep(delay);
+                if (!MicroController.IsClientConnected())
+                    return;
                 byte[] AESTemp;
                 using (Aes aesServise = Aes.Create())
                 {
-                    aesServise.KeySize = 192;
+                    aesServise.KeySize = 256;
                     AESTemp = aesServise.IV;
                 }
                 byte[] bytes = Encoding.UTF8.GetBytes("CHANGEIV;").Concat(AESTemp).ToArray();
@@ -48,7 +50,7 @@ namespace microcontrollerSide
                 MessageBox.Show(Convert.ToBase64String(AESTemp));
                 MicroController.SendToClient(bytes);
                 aesIV = AESTemp;
-            //}
+            }
         }
 
         public static byte[] EncryptedData(byte[] data)

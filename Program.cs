@@ -17,7 +17,7 @@ namespace microcontrollerSide
             
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new pipeInitionlazer());
+            Application.Run(new Form1());
         }
     }
 }

@@ -16,7 +16,6 @@ namespace microcontrollerSide
 {
     public partial class CommunicaionForm : Form
     {
-        private bool CLientOnline;
 
         private void CommunicaionForm_Load(object sender, EventArgs e)
         {
@@ -24,10 +23,10 @@ namespace microcontrollerSide
         }
 
 
-        public CommunicaionForm(string ConntrollerName)
+        public CommunicaionForm(string ConntrollerName, string RoomCode)
         {
             InitializeComponent();
-
+            RoomCodeTxBox.Text = RoomCode;
             Idendifeir.Text = ConntrollerName;
 
         }
@@ -38,21 +37,6 @@ namespace microcontrollerSide
             ClosingController.btnExit_Click();            
         }
         
-        private void SendToServerButton_Click(object sender, EventArgs e)
-        {
-            
-        }
-        
-        public bool IsClientOnline()
-        {
-            return this.CLientOnline;
-        }
-
-        private void DialogPanel_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void CommunicaionForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             MicroController.DisconnectFromServer();
@@ -60,33 +44,7 @@ namespace microcontrollerSide
             ClosingController.btnExit_Click();
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ExperimentController.MicroChipCommunication("Hello");
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            AesEncryption.ChengeIv();
-        }
-
-        private void IsCLientConnectedLabel_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void Header_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            PipeStream.WriteToPipe("hi Roy Morris");
-        }
+        
     }
 }
