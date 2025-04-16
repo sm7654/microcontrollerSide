@@ -39,8 +39,10 @@ namespace microcontrollerSide
             this.Header = new System.Windows.Forms.Panel();
             this.Idendifeir = new System.Windows.Forms.Label();
             this.Background = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.Header.SuspendLayout();
+            this.Background.SuspendLayout();
             this.SuspendLayout();
             // 
             // RoomCodeTxBox
@@ -102,11 +104,22 @@ namespace microcontrollerSide
             // Background
             // 
             this.Background.BackColor = System.Drawing.Color.White;
+            this.Background.Controls.Add(this.button1);
             this.Background.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Background.Location = new System.Drawing.Point(0, 0);
             this.Background.Name = "Background";
             this.Background.Size = new System.Drawing.Size(1280, 649);
             this.Background.TabIndex = 10;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(900, 614);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // CommunicaionForm
             // 
@@ -125,6 +138,7 @@ namespace microcontrollerSide
             this.panel1.ResumeLayout(false);
             this.Header.ResumeLayout(false);
             this.Header.PerformLayout();
+            this.Background.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -162,5 +176,7 @@ namespace microcontrollerSide
             // Fill the rectangle with the gradient
             graphics.FillRectangle(brush, gradientRectangle);
         }
+
+        private Button button1;
     }
 }

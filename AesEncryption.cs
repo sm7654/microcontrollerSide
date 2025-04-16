@@ -35,21 +35,22 @@ namespace microcontrollerSide
             while (MicroController.IsClientConnected())
             {
                 int delay = GetRandomDelay();
-                Console.WriteLine(delay);
                 Thread.Sleep(delay);
                 if (!MicroController.IsClientConnected())
                     return;
-                byte[] AESTemp;
+                byte[] AESTempIV;
+                byte[] AESTempKEY;
                 using (Aes aesServise = Aes.Create())
                 {
                     aesServise.KeySize = 256;
-                    AESTemp = aesServise.IV;
+                    AESTempIV = aesServise.IV;
+                    AESTempKEY = aesServise.Key;
                 }
-                byte[] bytes = Encoding.UTF8.GetBytes("CHANGEIV;").Concat(AESTemp).ToArray();
+                byte[] bytes = Encoding.UTF8.GetBytes("CHANGEIVANDKEY;").Concat(AESTempIV).Concat(AESTempKEY).ToArray();
 
-                MessageBox.Show(Convert.ToBase64String(AESTemp));
                 MicroController.SendToClient(bytes);
-                aesIV = AESTemp;
+                aesIV = AESTempIV;
+                aesKey = AESTempKEY;
             }
         }
 

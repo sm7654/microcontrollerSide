@@ -48,12 +48,14 @@ namespace microcontrollerSide
         public static void WriteToPipe(string data)
         {
             if (!IsConnected && pipeWriter == null)
+            {
+                Console.WriteLine("Cant write to pipe");
                 return;
+            }
             
             try
             {
-                pipeWriter.WriteLine($"{data}\n");
-                Console.WriteLine("Sent The message");
+                pipeWriter.WriteLine($"{data}");
 
             }
             catch (Exception e){ Console.WriteLine("error"); }
@@ -63,7 +65,10 @@ namespace microcontrollerSide
         private static void ReadFromPipe()
         {
             if (pipeReader == null)
+            {
+                Console.WriteLine("the pipe is not connected");
                 return;
+            }
 
             try
             {
@@ -82,6 +87,7 @@ namespace microcontrollerSide
         {
             try
             {
+                Console.WriteLine($"______________________________\nIn the MessageSelector and got a new message: {message}\n______________________________");
                 if (message.Split(';')[0] == "EXPERIMENT_RESULTS")
                 {
                     Console.WriteLine($"got from pipe: {message}");

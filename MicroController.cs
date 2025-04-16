@@ -225,8 +225,6 @@ namespace microcontrollerSide
             try
             {
                 string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
-                Console.WriteLine(Encoding.UTF8.GetString(AesEncryption.DecryptData(data)));
-
                 switch (message[0])
                 {
                     case "NEWXPERIMENT":
@@ -253,7 +251,6 @@ namespace microcontrollerSide
 
             if (!(experimentString.Length > 0))
                 return;
-            Console.WriteLine($"writing to pipe;");
             try
             {
                 string experName = experimentString[1]; // Fxperiment name
@@ -263,7 +260,7 @@ namespace microcontrollerSide
                 //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
 
                 PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency}");
-                Console.WriteLine($"writing to pipe;");
+                
 
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); ; return; }

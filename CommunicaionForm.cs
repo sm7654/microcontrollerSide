@@ -28,7 +28,7 @@ namespace microcontrollerSide
             InitializeComponent();
             RoomCodeTxBox.Text = RoomCode;
             Idendifeir.Text = ConntrollerName;
-
+            PipeStream.InitionlisePipe();
         }
         
 
@@ -44,7 +44,9 @@ namespace microcontrollerSide
             ClosingController.btnExit_Click();
         }
 
-
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PipeStream.WriteToPipe("Test chunk");
+        }
     }
 }

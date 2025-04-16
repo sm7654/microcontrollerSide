@@ -48,7 +48,7 @@ namespace microcontrollerSide
 
                     // generate keys and returns the public key and send it do server
 
-                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.ASCII.GetBytes($"Esp&{ControllerName.Text}"));
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}"));
 
                     Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
                     Thread.Sleep(250);
@@ -101,7 +101,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.11"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.4"), 65000);
 
                 Conn.Connect(address);
 
