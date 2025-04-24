@@ -33,7 +33,7 @@ namespace microcontrollerSide
                 ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
                 return;
             }
-            if (ControllerName.Text == "")
+            if (ControllerName.Text == "" ||  ControllerName.Text == SessionNameLabel.Text)
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
             new Thread(() =>
@@ -48,7 +48,7 @@ namespace microcontrollerSide
 
                     // generate keys and returns the public key and send it do server
 
-                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}"));
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}&{SessionNameLabel.Text}"));
 
                     Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
                     Thread.Sleep(250);
@@ -70,7 +70,7 @@ namespace microcontrollerSide
 
                     MicroController.SetMicroController(Conn);
                     CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text, Code);
-                    
+                    communicaionForm.Text = SessionNameLabel.Text;
                     MicroController.SetUI(communicaionForm);
                     PipeStream.InitionlisePipe();
 
@@ -101,7 +101,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.4"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 65000);
 
                 Conn.Connect(address);
 
@@ -134,6 +134,16 @@ namespace microcontrollerSide
         
 
         private void ConnectionErrorLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ControlletNameLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

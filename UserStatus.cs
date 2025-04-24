@@ -47,6 +47,10 @@ namespace microcontrollerSide
             else
                 UserConnectedStatus.BackColor = Color.Red;
         }
+        public void SetColor(Color c)
+        {
+            UserConnectedStatus.BackColor = c;
+        }
 
         public void SetRemoteEndPoint(string EN)
         {

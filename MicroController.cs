@@ -1,6 +1,7 @@
 ﻿using ServerSide;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
@@ -204,7 +205,13 @@ namespace microcontrollerSide
                 {
                     clientConnected = false;
                     UserStatus userStatus = new UserStatus(false, "Client disconnected");
-                    UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(userStatus); }));
+                    UserStatus userStatusTwo = new UserStatus(false, $"New Code - {bytes[2]}");
+                    userStatusTwo.SetColor(Color.Black);
+                    UI.BeginInvoke(new Action(() => { 
+                        UI.GetDialogPanel().Controls.Add(userStatus);
+                        UI.GetDialogPanel().Controls.Add(userStatusTwo);
+                        UI.SetNewCode(bytes[2]);
+                    }));
                 }
                 else if (bytes[1] == "200")
                 {
@@ -216,6 +223,7 @@ namespace microcontrollerSide
                     UI.BeginInvoke(new Action(() => { UI.Close(); }));
                     ClosingController.btnExit_Click();
                 }
+                
             }
             catch (Exception e) { }
         }

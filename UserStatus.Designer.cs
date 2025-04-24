@@ -75,7 +75,7 @@
             // UserConnectedStatus
             // 
             this.UserConnectedStatus.AutoSize = true;
-            this.UserConnectedStatus.BackColor = System.Drawing.Color.DodgerBlue;
+            this.UserConnectedStatus.BackColor = System.Drawing.Color.Black;
             this.UserConnectedStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UserConnectedStatus.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.UserConnectedStatus.Location = new System.Drawing.Point(0, 0);

@@ -178,5 +178,10 @@ namespace microcontrollerSide
         }
 
         private Button button1;
+
+        public void SetNewCode(string code)
+        {
+            RoomCodeTxBox.Text = code;
+        }
     }
 }

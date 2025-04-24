@@ -36,9 +36,11 @@ namespace microcontrollerSide
             this.panel2 = new System.Windows.Forms.Panel();
             this.ConnectionErrorLabel = new System.Windows.Forms.Label();
             this.ConnectButton = new System.Windows.Forms.Button();
-            this.ControllerName = new System.Windows.Forms.TextBox();
             this.ControlletNameLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.ControllerName = new System.Windows.Forms.TextBox();
+            this.SessionNameLabel = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -76,9 +78,11 @@ namespace microcontrollerSide
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.SessionNameLabel);
+            this.panel2.Controls.Add(this.ControllerName);
             this.panel2.Controls.Add(this.ConnectionErrorLabel);
             this.panel2.Controls.Add(this.ConnectButton);
-            this.panel2.Controls.Add(this.ControllerName);
             this.panel2.Controls.Add(this.ControlletNameLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(378, 4);
@@ -114,29 +118,13 @@ namespace microcontrollerSide
             this.ConnectButton.UseVisualStyleBackColor = false;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
-            // ControllerName
-            // 
-            this.ControllerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.ControllerName.BackColor = System.Drawing.Color.White;
-            this.ControllerName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ControllerName.Font = new System.Drawing.Font("Microsoft YaHei UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ControllerName.ForeColor = System.Drawing.Color.Black;
-            this.ControllerName.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.ControllerName.Location = new System.Drawing.Point(325, 206);
-            this.ControllerName.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.ControllerName.MinimumSize = new System.Drawing.Size(2, 50);
-            this.ControllerName.Name = "ControllerName";
-            this.ControllerName.Size = new System.Drawing.Size(231, 25);
-            this.ControllerName.TabIndex = 0;
-            // 
             // ControlletNameLabel
             // 
             this.ControlletNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.ControlletNameLabel.AutoSize = true;
             this.ControlletNameLabel.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ControlletNameLabel.Location = new System.Drawing.Point(212, 205);
+            this.ControlletNameLabel.Location = new System.Drawing.Point(168, 225);
             this.ControlletNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ControlletNameLabel.MaximumSize = new System.Drawing.Size(133, 0);
             this.ControlletNameLabel.MinimumSize = new System.Drawing.Size(0, 25);
@@ -145,6 +133,7 @@ namespace microcontrollerSide
             this.ControlletNameLabel.TabIndex = 2;
             this.ControlletNameLabel.Text = "Iderntifier";
             this.ControlletNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ControlletNameLabel.Click += new System.EventHandler(this.ControlletNameLabel_Click);
             // 
             // pictureBox1
             // 
@@ -158,6 +147,32 @@ namespace microcontrollerSide
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
+            // 
+            // ControllerName
+            // 
+            this.ControllerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.ControllerName.Location = new System.Drawing.Point(300, 223);
+            this.ControllerName.Name = "ControllerName";
+            this.ControllerName.Size = new System.Drawing.Size(207, 27);
+            this.ControllerName.TabIndex = 7;
+            // 
+            // SessionNameLabel
+            // 
+            this.SessionNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.SessionNameLabel.Location = new System.Drawing.Point(300, 179);
+            this.SessionNameLabel.Name = "SessionNameLabel";
+            this.SessionNameLabel.Size = new System.Drawing.Size(207, 27);
+            this.SessionNameLabel.TabIndex = 8;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label1.Location = new System.Drawing.Point(139, 182);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(131, 24);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Sessoin Name";
             // 
             // Form1
             // 
@@ -184,11 +199,13 @@ namespace microcontrollerSide
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button ConnectButton;
-        private System.Windows.Forms.TextBox ControllerName;
         private System.Windows.Forms.Label ControlletNameLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label ConnectionErrorLabel;
+        private System.Windows.Forms.TextBox SessionNameLabel;
+        private System.Windows.Forms.TextBox ControllerName;
+        private System.Windows.Forms.Label label1;
     }
 }
 
