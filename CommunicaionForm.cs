@@ -48,5 +48,10 @@ namespace microcontrollerSide
         {
             PipeStream.WriteToPipe("Test chunk");
         }
+
+        private void RoomCodeTxBox_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.3"), 65000);
 
                 Conn.Connect(address);
 

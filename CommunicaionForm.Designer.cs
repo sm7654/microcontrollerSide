@@ -47,6 +47,7 @@ namespace microcontrollerSide
             // 
             // RoomCodeTxBox
             // 
+            this.RoomCodeTxBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RoomCodeTxBox.AutoSize = true;
             this.RoomCodeTxBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.RoomCodeTxBox.ForeColor = System.Drawing.Color.White;
@@ -55,6 +56,7 @@ namespace microcontrollerSide
             this.RoomCodeTxBox.Size = new System.Drawing.Size(125, 28);
             this.RoomCodeTxBox.TabIndex = 5;
             this.RoomCodeTxBox.Text = "Room Code:";
+            this.RoomCodeTxBox.Click += new System.EventHandler(this.RoomCodeTxBox_Click);
             // 
             // panel1
             // 
