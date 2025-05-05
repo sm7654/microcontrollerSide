@@ -98,6 +98,17 @@ namespace microcontrollerSide
             } catch (Exception e) { }
         }
         
+
+        public static void DisconnetFromPipe()
+        {
+            IsConnected = false;
+            pipeWriter.Close();
+            pipeReader.Close();
+            pipeWriter = null;
+            pipeReader = null;
+
+        
+        }
         public static bool IsPipeConnected()
         {
             return IsConnected;

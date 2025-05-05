@@ -220,6 +220,7 @@ namespace microcontrollerSide
                 else if (bytes[1] == "Shut")
                 {
                     controller.Close();
+                    //PipeStream.DisconnetFromPipe();
                     UI.BeginInvoke(new Action(() => { UI.Close(); }));
                     ClosingController.btnExit_Click();
                 }
