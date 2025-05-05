@@ -58,7 +58,7 @@ namespace microcontrollerSide
 
                 try
                 {
-                    byte[] EncryptedData = AesEncryption.EncryptedData(data);
+                    byte[] EncryptedData = AesEncryption.EncryptedDataForClient(data);
                     controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
                     Thread.Sleep(250);
                     controller.Send(EncryptedData);
@@ -75,10 +75,10 @@ namespace microcontrollerSide
             lock (communicationLock)
             {
                 byte[] data = Encoding.UTF8.GetBytes($"{dataStr}");
-                data = RsaEncryption.EncryptToServer(ServerRole.Concat(data).ToArray());
+                data = AesEncryption.EncryptedDataForServer(ServerRole.Concat(data).ToArray());
                 controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
 
-                Thread.Sleep(400);
+                Thread.Sleep(300);
                 controller.Send(data);
             }
         }
@@ -99,7 +99,7 @@ namespace microcontrollerSide
                 byte[] AESIv = new byte[128];
                 bytesread = controller.Receive(AESIv);
 
-                AesEncryption.Addkeys(AESKey, AESIv);
+                AesEncryption.AddkeysForClient(AESKey, AESIv);
 
                 clientConnected = true;
                 new Thread(() => StartClientCommunication_recv()).Start();
@@ -114,7 +114,7 @@ namespace microcontrollerSide
                 int bytesRead = controller.Receive(bytes);
                 byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
                 controller.Receive(bytes1);
-                string[] Status = RsaEncryption.Decrypt(bytes1).Split('&');
+                string[] Status = AesEncryption.DecryptToServerToString(bytes1).Split('&');
                 string returnCode = Status[1];
 
                 if (returnCode == "200")
@@ -141,7 +141,6 @@ namespace microcontrollerSide
             {
                 try
                 {
-                    bool Server = false;
                     byte[] buffer = new byte[1024];
                     controller.ReceiveTimeout = 0;
                     int byteRec = controller.Receive(buffer);
@@ -152,7 +151,7 @@ namespace microcontrollerSide
                     {
                         try
                         {
-                            byte[] data = RsaEncryption.DecryptToByte(buffer);
+                            byte[] data = AesEncryption.DecryptDataForServer(buffer);
                             if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
                             {
                                 if (Is200Mesgae(data))
@@ -233,7 +232,7 @@ namespace microcontrollerSide
         {
             try
             {
-                string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptData(data)).Split(';');
+                string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptDataForClient(data)).Split(';');
                 switch (message[0])
                 {
                     case "NEWXPERIMENT":

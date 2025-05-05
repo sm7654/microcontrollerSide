@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -12,13 +13,42 @@ namespace microcontrollerSide
 {
     public partial class Form1 : Form
     {
-        
+        private Socket ConnToServer;
         public Form1()
         {
             RsaEncryption.GenerateKeys();
             InitializeComponent();
             if(!PipeStream.InitionlisePipe())
                 ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
+            new Thread(() =>
+            {
+                (bool status, Socket Conn) = CreateConn();
+                ConnToServer = Conn;
+                byte[] aesKey = new byte[128];
+                byte[] aesIv = new byte[128];
+
+                
+                if (status)
+                {
+
+                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp"));
+                    // generate keys and returns the public key and send it do server
+
+
+                    ConnToServer.Send(recognitionBytes);
+
+                    ConnToServer.Receive(aesKey);
+                    ConnToServer.Receive(aesIv);
+
+                    AesEncryption.AddkeysForServer(aesKey, aesIv);
+
+                   
+
+
+
+
+                }
+            }).Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -36,56 +66,43 @@ namespace microcontrollerSide
             if (ControllerName.Text == "" ||  ControllerName.Text == SessionNameLabel.Text)
                 return;
             ConnectionErrorLabel.Text = "Trying to connect the server.....";
+
             new Thread(() =>
             {
-                (bool status, Socket Conn) = CreateConn();
+                byte[] SessionAndMicroName = AesEncryption.EncryptedDataForServer(Encoding.UTF8.GetBytes($"{SessionNameLabel.Text}&{ControllerName.Text}"));
+                ConnToServer.Send(Encoding.UTF8.GetBytes(SessionAndMicroName.Length.ToString()));
+                Thread.Sleep(250);
+                ConnToServer.Send(SessionAndMicroName);
+
                 
-                Conn.Send(new byte[128]);
+                
+                
+                
+                
+                
+                byte[] roomCode = new byte[1024];
+                int byterec = ConnToServer.Receive(roomCode);
+                int bufferSize = int.Parse(Encoding.UTF8.GetString(roomCode, 0, byterec));
+                roomCode = new byte[bufferSize];
+                ConnToServer.Receive(roomCode);
+                string Code = AesEncryption.DecryptToServerToString(roomCode);
+                if (bufferSize <= 0 || Code == "500")
+                    return;
 
 
-                if (status)
-                {
-
-                    // generate keys and returns the public key and send it do server
-
-                    byte[] recognitionBytes = RsaEncryption.EncryptToServer(Encoding.UTF8.GetBytes($"Esp&{ControllerName.Text}&{SessionNameLabel.Text}"));
-
-                    Conn.Send(Encoding.UTF8.GetBytes(recognitionBytes.Length.ToString()));
-                    Thread.Sleep(250);
-                    Conn.Send(recognitionBytes);
+                //MessageBox.Show();
+                MicroController.SetMicroController(ConnToServer);
+                CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text, Code);
+                communicaionForm.Text = SessionNameLabel.Text;
+                MicroController.SetUI(communicaionForm);
+                PipeStream.InitionlisePipe();
 
 
-
-
-                    byte[] roomCode = new byte[128];
-                    
-                    int length = Conn.Receive(roomCode);
-                    
-
-                    string Code = RsaEncryption.Decrypt(roomCode);
-                    if (length <= 0 || Code == "500")
-                        return;
-                    
-
-
-                    MicroController.SetMicroController(Conn);
-                    CommunicaionForm communicaionForm = new CommunicaionForm(ControllerName.Text, Code);
-                    communicaionForm.Text = SessionNameLabel.Text;
-                    MicroController.SetUI(communicaionForm);
-                    PipeStream.InitionlisePipe();
-
-
-                    this.BeginInvoke(new Action(() => {
-                        this.Hide();
-                        communicaionForm.Show();
-                    }));
-                    
-
-
-
-                }
+                this.BeginInvoke(new Action(() => {
+                    this.Hide();
+                    communicaionForm.Show();
+                }));
             }).Start();
-
             
         }
 
@@ -113,8 +130,10 @@ namespace microcontrollerSide
                 RsaEncryption.SetServerPublicKey(Encoding.UTF8.GetString(ServerpublicKey, 0, bytesRec));
 
 
-                Conn.Receive(ServerpublicKey);
-                Conn.Receive(ServerpublicKey);
+
+
+                //Conn.Receive(ServerpublicKey);
+                //Conn.Receive(ServerpublicKey);
                 // recive code
 
                 return (true, Conn);

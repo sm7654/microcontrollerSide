@@ -17,11 +17,19 @@ namespace microcontrollerSide
         private static byte[] aesKey;
         private static byte[] aesIV;
 
-        public static void Addkeys(byte[] key, byte[] Iv)
+        private static byte[] aesKeyServer;
+        private static byte[] aesIVServer;
+
+        public static void AddkeysForServer(byte[] key, byte[] Iv)
+        {
+            aesKeyServer = RsaEncryption.DecryptToByte(key);
+            aesIVServer = RsaEncryption.DecryptToByte(Iv);
+        }
+        public static void AddkeysForClient(byte[] key, byte[] Iv)
         {
             aesKey = RsaEncryption.DecryptToByte(key);
             aesIV = RsaEncryption.DecryptToByte(Iv);
-           new Thread(ChengeIv).Start();
+            new Thread(ChengeIv).Start();
         }
         public static int GetRandomDelay()
         {
@@ -54,7 +62,7 @@ namespace microcontrollerSide
             }
         }
 
-        public static byte[] EncryptedData(byte[] data)
+        public static byte[] EncryptedDataForClient(byte[] data)
         {
             if (aesKey == null || aesIV == null)
                 return null;
@@ -81,7 +89,7 @@ namespace microcontrollerSide
             return null;
         }
 
-        public static byte[] DecryptData(byte[] encryptedData)
+        public static byte[] DecryptDataForClient(byte[] encryptedData)
         {
             if (aesKey == null || aesIV == null)
                 return null;
@@ -109,6 +117,82 @@ namespace microcontrollerSide
 
             return null;
         }
+
+
+
+
+
+        public static byte[] EncryptedDataForServer(byte[] data)
+        {
+            if (aesKeyServer == null || aesIVServer == null)
+                return null;
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = aesKeyServer;
+                    aes.IV = aesIVServer;
+
+                    ICryptoTransform encryptor = aes.CreateEncryptor();
+                    using (MemoryStream ms = new MemoryStream())
+                    using (CryptoStream Cry = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    {
+                        Cry.Write(data, 0, data.Length);
+
+                        Cry.FlushFinalBlock();
+                        return ms.ToArray();
+                    }
+
+                }
+            }
+            catch (Exception e) { }
+
+            return null;
+        }
+
+        public static byte[] DecryptDataForServer(byte[] encryptedData)
+        {
+            if (aesKeyServer == null || aesIVServer == null)
+                return null;
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = aesKeyServer;
+                    aes.IV = aesIVServer;
+
+                    ICryptoTransform decryptor = aes.CreateDecryptor();
+                    using (MemoryStream ms = new MemoryStream(encryptedData))
+                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    using (MemoryStream decryptedStream = new MemoryStream())
+                    {
+                        cs.CopyTo(decryptedStream);
+                        return decryptedStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // Handle the exception appropriately
+            }
+
+            return null;
+        }
+        public static string DecryptToServerToString(byte[] encryptedData)
+        {
+            try
+            {
+                return Encoding.UTF8.GetString(DecryptDataForServer(encryptedData));
+            }catch(Exception e)
+            {
+                return "";
+            }
+        }
+
+
+
+
+
 
         public static byte[] FileEn()
         {
