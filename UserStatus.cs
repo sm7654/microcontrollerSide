@@ -28,7 +28,7 @@ namespace microcontrollerSide
 
             UserConnectedStatus.BackColor = Color.DodgerBlue;
 
-            panel2.BackColor = Color.Transparent;
+            
         }
 
         public UserStatus(bool status, string Text)
@@ -40,12 +40,19 @@ namespace microcontrollerSide
             string israelTime = localDate.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
             TimeLabel.Text = $"{israelDate} {israelTime}";
-            UserConectivityLabel.Text = $"{Text}";
-        
+            UserConectivityLabel.Text = $"{Text.Split(';')[0]}";
+
             if (status)
-                UserConnectedStatus.BackColor = Color.LightGreen;   
+            {
+                UserConnectedStatus.BackColor = Color.LightGreen;
+                
+            }
             else
+            {
+                NewCode.Text = Text.Split(';')[1];
+                NewCode.ForeColor = Color.Black;
                 UserConnectedStatus.BackColor = Color.Red;
+            }
         }
         public void SetColor(Color c)
         {
@@ -68,6 +75,16 @@ namespace microcontrollerSide
         }
 
         private void UserConectivityLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
 
         }

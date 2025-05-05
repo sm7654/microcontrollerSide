@@ -51,9 +51,10 @@ namespace microcontrollerSide
             this.RoomCodeTxBox.AutoSize = true;
             this.RoomCodeTxBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.RoomCodeTxBox.ForeColor = System.Drawing.Color.White;
-            this.RoomCodeTxBox.Location = new System.Drawing.Point(1100, 15);
+            this.RoomCodeTxBox.Location = new System.Drawing.Point(825, 12);
+            this.RoomCodeTxBox.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.RoomCodeTxBox.Name = "RoomCodeTxBox";
-            this.RoomCodeTxBox.Size = new System.Drawing.Size(125, 28);
+            this.RoomCodeTxBox.Size = new System.Drawing.Size(102, 21);
             this.RoomCodeTxBox.TabIndex = 5;
             this.RoomCodeTxBox.Text = "Room Code:";
             this.RoomCodeTxBox.Click += new System.EventHandler(this.RoomCodeTxBox_Click);
@@ -62,21 +63,23 @@ namespace microcontrollerSide
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.Controls.Add(this.DialogPanel);
-            this.panel1.Location = new System.Drawing.Point(56, 70);
+            this.panel1.Location = new System.Drawing.Point(42, 57);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1185, 500);
+            this.panel1.Size = new System.Drawing.Size(889, 406);
             this.panel1.TabIndex = 8;
             // 
             // DialogPanel
             // 
             this.DialogPanel.AutoScroll = true;
-            this.DialogPanel.BackColor = System.Drawing.Color.White;
+            this.DialogPanel.BackColor = System.Drawing.SystemColors.Window;
             this.DialogPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DialogPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DialogPanel.Location = new System.Drawing.Point(0, 0);
+            this.DialogPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DialogPanel.Name = "DialogPanel";
-            this.DialogPanel.Padding = new System.Windows.Forms.Padding(25, 8, 8, 8);
-            this.DialogPanel.Size = new System.Drawing.Size(1185, 500);
+            this.DialogPanel.Padding = new System.Windows.Forms.Padding(19, 6, 6, 6);
+            this.DialogPanel.Size = new System.Drawing.Size(889, 406);
             this.DialogPanel.TabIndex = 0;
             // 
             // Header
@@ -86,8 +89,9 @@ namespace microcontrollerSide
             this.Header.Controls.Add(this.RoomCodeTxBox);
             this.Header.Dock = System.Windows.Forms.DockStyle.Top;
             this.Header.Location = new System.Drawing.Point(0, 0);
+            this.Header.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Header.Name = "Header";
-            this.Header.Size = new System.Drawing.Size(1280, 50);
+            this.Header.Size = new System.Drawing.Size(960, 41);
             this.Header.TabIndex = 9;
             this.Header.Paint += new System.Windows.Forms.PaintEventHandler(this.set_background);
             // 
@@ -97,27 +101,30 @@ namespace microcontrollerSide
             this.Idendifeir.BackColor = System.Drawing.Color.Transparent;
             this.Idendifeir.Font = new System.Drawing.Font("Segoe UI", 14F);
             this.Idendifeir.ForeColor = System.Drawing.Color.White;
-            this.Idendifeir.Location = new System.Drawing.Point(50, 11);
+            this.Idendifeir.Location = new System.Drawing.Point(38, 9);
+            this.Idendifeir.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.Idendifeir.Name = "Idendifeir";
-            this.Idendifeir.Size = new System.Drawing.Size(150, 32);
+            this.Idendifeir.Size = new System.Drawing.Size(118, 25);
             this.Idendifeir.TabIndex = 0;
             this.Idendifeir.Text = "CellRoom #9";
             // 
             // Background
             // 
-            this.Background.BackColor = System.Drawing.Color.White;
+            this.Background.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.Background.Controls.Add(this.button1);
             this.Background.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Background.Location = new System.Drawing.Point(0, 0);
+            this.Background.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Background.Name = "Background";
-            this.Background.Size = new System.Drawing.Size(1280, 649);
+            this.Background.Size = new System.Drawing.Size(960, 527);
             this.Background.TabIndex = 10;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(900, 614);
+            this.button1.Location = new System.Drawing.Point(675, 499);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(56, 19);
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -125,14 +132,15 @@ namespace microcontrollerSide
             // 
             // CommunicaionForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1280, 649);
+            this.ClientSize = new System.Drawing.Size(960, 527);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Header);
             this.Controls.Add(this.Background);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "CommunicaionForm";
             this.Text = "CommunicaionForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CommunicaionForm_FormClosing);

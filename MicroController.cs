@@ -203,12 +203,9 @@ namespace microcontrollerSide
                 if (bytes[1] == "302")
                 {
                     clientConnected = false;
-                    UserStatus userStatus = new UserStatus(false, "Client disconnected");
-                    UserStatus userStatusTwo = new UserStatus(false, $"New Code - {bytes[2]}");
-                    userStatusTwo.SetColor(Color.Black);
+                    UserStatus userStatus = new UserStatus(false, $"Client disconnected;New Code - {bytes[2]}");
                     UI.BeginInvoke(new Action(() => { 
                         UI.GetDialogPanel().Controls.Add(userStatus);
-                        UI.GetDialogPanel().Controls.Add(userStatusTwo);
                         UI.SetNewCode(bytes[2]);
                     }));
                 }
