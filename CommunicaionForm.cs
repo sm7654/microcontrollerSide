@@ -46,7 +46,7 @@ namespace microcontrollerSide
 
         private void button1_Click(object sender, EventArgs e)
         {
-            PipeStream.WriteToPipe("Test chunk");
+            MicroController.MicroChipCommunication("hello");
         }
 
         private void RoomCodeTxBox_Click(object sender, EventArgs e)

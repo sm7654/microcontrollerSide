@@ -60,7 +60,7 @@ namespace microcontrollerSide
                 {
                     byte[] EncryptedData = AesEncryption.EncryptedDataForClient(data);
                     controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
                     controller.Send(EncryptedData);
                 }
                 catch (Exception e)
@@ -78,7 +78,7 @@ namespace microcontrollerSide
                 data = AesEncryption.EncryptedDataForServer(ServerRole.Concat(data).ToArray());
                 controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
 
-                Thread.Sleep(300);
+                Thread.Sleep(100);
                 controller.Send(data);
             }
         }
@@ -94,9 +94,11 @@ namespace microcontrollerSide
                 UI.GetDialogPanel().Controls.Add(Control);
 
                 byte[] AESKey = new byte[128];
-                int bytesread = controller.Receive(AESKey);
 
                 byte[] AESIv = new byte[128];
+                
+                int bytesread = controller.Receive(AESKey);
+
                 bytesread = controller.Receive(AESIv);
 
                 AesEncryption.AddkeysForClient(AESKey, AESIv);

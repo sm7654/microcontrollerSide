@@ -71,7 +71,7 @@ namespace microcontrollerSide
             {
                 byte[] SessionAndMicroName = AesEncryption.EncryptedDataForServer(Encoding.UTF8.GetBytes($"{SessionNameLabel.Text}&{ControllerName.Text}"));
                 ConnToServer.Send(Encoding.UTF8.GetBytes(SessionAndMicroName.Length.ToString()));
-                Thread.Sleep(250);
+                Thread.Sleep(100);
                 ConnToServer.Send(SessionAndMicroName);
 
                 

@@ -27,9 +27,14 @@ namespace microcontrollerSide
         }
         public static void AddkeysForClient(byte[] key, byte[] Iv)
         {
+            
             aesKey = RsaEncryption.DecryptToByte(key);
             aesIV = RsaEncryption.DecryptToByte(Iv);
-            new Thread(ChengeIv).Start();
+            
+            
+            
+            
+            //new Thread(ChengeIv).Start();
         }
         public static int GetRandomDelay()
         {
