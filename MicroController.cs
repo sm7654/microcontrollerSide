@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
@@ -24,15 +25,12 @@ namespace microcontrollerSide
         private static bool clientConnected = false;
         private static object communicationLock = new object();
 
-        public static bool IsClientConnected()
-        {
-            return clientConnected;
-        }
        
         public static void SetMicroController(Socket controllerSock)
         {
             controller = controllerSock;
-            new Thread(ListenTo200Code).Start();            
+            new Thread(ListenTo200Code).Start();  
+            new Thread(KeepConnectionAlive).Start();
         }
 
         public static void SetUI(CommunicaionForm form)
@@ -49,6 +47,8 @@ namespace microcontrollerSide
             SendToClient(Encoding.UTF8.GetBytes(data));
         }
         
+
+
         public static void SendToClient(byte[] data)
         {
             lock (communicationLock)
@@ -60,7 +60,7 @@ namespace microcontrollerSide
                 {
                     byte[] EncryptedData = AesEncryption.EncryptedDataForClient(data);
                     controller.Send(Encoding.UTF8.GetBytes(EncryptedData.Length.ToString()));
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     controller.Send(EncryptedData);
                 }
                 catch (Exception e)
@@ -70,138 +70,176 @@ namespace microcontrollerSide
             }
         }
 
+
+
         public static void SendToServer(string dataStr)
         {
-            lock (communicationLock)
+            try
             {
-                byte[] data = Encoding.UTF8.GetBytes($"{dataStr}");
-                data = AesEncryption.EncryptedDataForServer(ServerRole.Concat(data).ToArray());
-                controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
-
-                Thread.Sleep(100);
-                controller.Send(data);
+                lock (communicationLock)
+                {
+                    byte[] data = Encoding.UTF8.GetBytes($"{dataStr}");
+                    data = AesEncryption.EncryptedDataForServer(ServerRole.Concat(data).ToArray());
+                    controller.Send(Encoding.UTF8.GetBytes(data.Length.ToString()));
+                    Thread.Sleep(200);
+                    controller.Send(data);
+                }
             }
+            catch (SocketException e)
+            {
+                controller.Close();
+                UI.BeginInvoke(new Action(() =>
+                {
+                    UserStatus Control = new UserStatus(false, "Lost Connection With Server;");
+                    Control.SetRemoteEndPoint("");
+
+                    UI.GetDialogPanel().Controls.Add(Control);
+
+                }));
+            }
+            catch (Exception e) { MessageBox.Show("\n\n\n\n\n\n\nhello"); }
         }
        
         // Communication Flow Methods
-        private static void GetAESkeysANdStaertCommunication(string remoteEndPoint)
+        private static void GetAESkeysAndStartCommunication(string remoteEndPoint)
         {
-            UI.BeginInvoke(new Action(() =>
+            try
             {
-                UserStatus Control = new UserStatus(true, "Client Connected!");
-                Control.SetRemoteEndPoint(remoteEndPoint);
-                
-                UI.GetDialogPanel().Controls.Add(Control);
+                lock (communicationLock)
+                {
+                    byte[] AESKey = new byte[128];
 
-                byte[] AESKey = new byte[128];
+                    byte[] AESIv = new byte[128];
 
-                byte[] AESIv = new byte[128];
-                
-                int bytesread = controller.Receive(AESKey);
 
-                bytesread = controller.Receive(AESIv);
+                    int bytesread = controller.Receive(AESKey);
 
-                AesEncryption.AddkeysForClient(AESKey, AESIv);
+                    bytesread = controller.Receive(AESIv);
 
+                    AesEncryption.AddkeysForClient(AESKey, AESIv);
+                }
                 clientConnected = true;
-                new Thread(() => StartClientCommunication_recv()).Start();
-            }));
+                UI.BeginInvoke(new Action(() =>
+                {
+                    UserStatus Control = new UserStatus(true, "Client Connected!");
+                    Control.SetRemoteEndPoint(remoteEndPoint);
+
+                    UI.GetDialogPanel().Controls.Add(Control);
+
+                }));
+            }
+            catch (Exception e) {  }
+
+            new Thread(StartClientCommunication_recv).Start();
         }
 
         private static void ListenTo200Code()
         {
-            try
-            {
-                byte[] bytes = new byte[1024];
-                int bytesRead = controller.Receive(bytes);
-                byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
-                controller.Receive(bytes1);
-                string[] Status = AesEncryption.DecryptToServerToString(bytes1).Split('&');
-                string returnCode = Status[1];
 
-                if (returnCode == "200")
-                {
-                    GetAESkeysANdStaertCommunication(Status[2]);
-                    return;
-                }
-                else if (returnCode == "Shut")
-                {
-                    controller.Close();
-                    UI.BeginInvoke(new Action(() => { UI.Close(); }));
-                    ClosingController.btnExit_Click();
-                }
-            }
-            catch (Exception e)
+            while (true)
             {
-                controller.Close();
+                try
+                {
+
+                    controller.ReceiveTimeout = 5000;
+                    byte[] bytes = new byte[1024];
+                    int bytesRead = controller.Receive(bytes);
+                    byte[] bytes1 = new byte[int.Parse(Encoding.UTF8.GetString(bytes, 0, bytesRead))];
+                    controller.Receive(bytes1);
+                    string[] Status = AesEncryption.DecryptToServerToString(bytes1).Split('&');
+                    string returnCode = Status[1];
+
+                    if (returnCode == "200")
+                    {
+                        GetAESkeysAndStartCommunication(Status[2]);
+                        return;
+                    }
+                    else if (returnCode == "Shut")
+                    {
+                        controller.Close();
+                        UI.BeginInvoke(new Action(() => { UI.Close(); }));
+                        ClosingController.btnExit_Click();
+                        break;
+                    }
+                    else { }
+                }
+                catch (SocketException ex) {
+;
+                    UI.BeginInvoke(new Action(() =>
+                    {
+                        UserStatus Control = new UserStatus(false, "Lost Connection With Server;");
+                        Control.SetRemoteEndPoint("");
+
+                        UI.GetDialogPanel().Controls.Add(Control);
+
+                    }));
+                    break;
+                }
+                catch (Exception ex) {  }
             }
+            
         }
 
         private static void StartClientCommunication_recv()
         {
-            while (controller.Connected && clientConnected)
+            try
             {
-                try
+                while (controller.Connected && clientConnected)
                 {
-                    byte[] buffer = new byte[1024];
-                    controller.ReceiveTimeout = 0;
-                    int byteRec = controller.Receive(buffer);
-                    buffer = new byte[int.Parse(Encoding.UTF8.GetString(buffer, 0, byteRec))];
-                    controller.Receive(buffer);
-
-                    if (buffer.Length >= ServerRole.Length)
+                    try
                     {
-                        try
+                        byte[] buffer = new byte[1024];
+                        controller.ReceiveTimeout = 5000;
+                        int byteRec = controller.Receive(buffer);
+                        buffer = new byte[int.Parse(Encoding.UTF8.GetString(buffer, 0, byteRec))];
+                        controller.Receive(buffer);
+
+                        new Thread(() =>
                         {
-                            byte[] data = AesEncryption.DecryptDataForServer(buffer);
-                            if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
+                            if (buffer.Length >= ServerRole.Length)
                             {
-                                if (Is200Mesgae(data))
+                                try
                                 {
-                                    return;
+                                    byte[] data = AesEncryption.DecryptDataForServer(buffer);
+                                    if (data.Take(ServerRole.Length).SequenceEqual(ServerRole))
+                                    {
+                                        
+                                        new Thread(() => ServerRelatedMessages(data)).Start();
+                                    }
+                                    else
+                                    {
+                                        new Thread(() => ClientRelatedMessages(data)).Start();
+                                    }
                                 }
-                                new Thread(() => ServerRelatedMessages(data)).Start();
+                                catch (Exception e)
+                                {
+
+                                    new Thread(() => ClientRelatedMessages(buffer)).Start();
+                                }
                             }
                             else
                             {
-                                new Thread(() => ClientRelatedMessages(data)).Start();
+                                new Thread(() => ClientRelatedMessages(buffer)).Start();
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            new Thread(() => ClientRelatedMessages(buffer)).Start();
-                        }
+                        }).Start();
                     }
-                    else
+                    catch (Exception e)
                     {
-                        new Thread(() => ClientRelatedMessages(buffer)).Start();
+                        
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
                 }
             }
+            catch (Exception e) { }
         }
 
-        // Message Handling Methods
-        private static bool Is200Mesgae(byte[] data)
-        {
-            string[] bytes = Encoding.UTF8.GetString(data).Split('&');
-            if (bytes[1] == "200")
-            {
-                GetAESkeysANdStaertCommunication(bytes[2]);
-                return true;
-            }
-            return false;
-        }
+        
 
         private static void ServerRelatedMessages(byte[] data)
         {
             try
             {
                 string[] bytes = Encoding.UTF8.GetString(data).Split('&');
-
+                
                 if (bytes[1] == "302")
                 {
                     clientConnected = false;
@@ -210,6 +248,12 @@ namespace microcontrollerSide
                         UI.GetDialogPanel().Controls.Add(userStatus);
                         UI.SetNewCode(bytes[2]);
                     }));
+
+                    new Thread(ListenTo200Code).Start();
+                }
+                else if (bytes[1] == "CHANGEKEYIV")
+                {
+                    AesEncryption.SetNewKeyAndIvForServer(bytes[2], bytes[3]);
                 }
                 else if (bytes[1] == "200")
                 {
@@ -231,26 +275,40 @@ namespace microcontrollerSide
         {
             try
             {
-                string[] message = Encoding.UTF8.GetString(AesEncryption.DecryptDataForClient(data)).Split(';');
+                byte[] bytes = AesEncryption.DecryptDataForClient(data);
+                string[] message = Encoding.UTF8.GetString(bytes).Split(';');
+
                 switch (message[0])
                 {
                     case "NEWXPERIMENT":
 
-                        Console.WriteLine("detected new exper");
                         SendToPipeNewExperiment(message);
                         UserStatus Control = new UserStatus("New Expreriment");
-                        Control.SetDetails($"Name: {message[1]}      Frequency: {message[2]}");
+                        Control.SetDetails($"Name: {message[1]}      Frequency: {message[2]}      Duration: {message[3]}");
 
 
                         UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
                         
 
                         break;
+                    case "GotEnKeys":
 
+                        AesEncryption.KeysChangesSuccessfuly();
+                        break;
+                    case "StopExper":
+                        Control = new UserStatus("Experiment Stoped");
+                        UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
+
+
+                        PipeStream.WriteToPipe(message[0]);
+                        break;
                     default: break;
-                }
+                } 
             }
-            catch (Exception e) { }
+            catch (Exception e) 
+            {
+                MessageBox.Show($"error \n {e.Message}");
+            }
         }
 
         public static void SendToPipeNewExperiment(string[] experimentString)
@@ -262,11 +320,11 @@ namespace microcontrollerSide
             {
                 string experName = experimentString[1]; // Fxperiment name
                 string Frequency = experimentString[2]; // Frequency of engine
-
+                string Duration = experimentString[3];
                 Console.WriteLine($"{experName}{Frequency}");
                 //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
 
-                PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency}");
+                PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency};{Duration}");
                 
 
             }
@@ -305,7 +363,28 @@ namespace microcontrollerSide
         public static void DisconnectFromServer()
         {
             SendToServer("&303");
+            controller.Close();
         }
+        
+        public static void KeepConnectionAlive()
+        {
+            Thread.Sleep(2000);
+            try
+            {
+                while (controller.Connected)
+                {
+                    SendToServer("&Ping;");
+                    Thread.Sleep(500);
+                }
+            }
+            catch (Exception e) {  }
+        }
+        
+        public static bool IsClientConnected()
+        {
+            return clientConnected;
+        }
+
 
     }
 }

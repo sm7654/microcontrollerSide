@@ -45,7 +45,7 @@ namespace microcontrollerSide
             if (status)
             {
                 UserConnectedStatus.BackColor = Color.LightGreen;
-                
+                NewCode.Text = "";
             }
             else
             {
@@ -69,24 +69,5 @@ namespace microcontrollerSide
         }
 
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void UserConectivityLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

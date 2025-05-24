@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using microcontrollerSide;
+using System;
 
 namespace ServerSide
 {
@@ -7,17 +7,9 @@ namespace ServerSide
     {
         public static void btnExit_Click()
         {
-            string SolutionName = Assembly.GetExecutingAssembly().GetName().Name;
-
-
-
-            Process[] processes = Process.GetProcessesByName(SolutionName);
-            foreach (Process process in processes)
-            {
-                try { 
-                    process.Kill(); 
-                } catch { }
-            }
+            PipeStream.WriteToPipe("shut;");
+            Environment.Exit(0);
+            
         }
     }
 }

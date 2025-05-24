@@ -17,25 +17,16 @@ namespace microcontrollerSide
     public partial class CommunicaionForm : Form
     {
 
-        private void CommunicaionForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
 
         public CommunicaionForm(string ConntrollerName, string RoomCode)
         {
             InitializeComponent();
             RoomCodeTxBox.Text = RoomCode;
             Idendifeir.Text = ConntrollerName;
-            PipeStream.InitionlisePipe();
         }
         
 
-        private void formClosing(object sender, EventArgs e)
-        {
-            ClosingController.btnExit_Click();            
-        }
+        
         
         private void CommunicaionForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -46,12 +37,8 @@ namespace microcontrollerSide
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MicroController.MicroChipCommunication("hello");
+            MicroController.MicroChipCommunication("shai");
         }
 
-        private void RoomCodeTxBox_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace microcontrollerSide
 {
-    partial class Form1
+    partial class InitionliseConnectionForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,17 +30,18 @@ namespace microcontrollerSide
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InitionliseConnectionForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.SessionNameLabel = new System.Windows.Forms.TextBox();
+            this.ControllerName = new System.Windows.Forms.TextBox();
             this.ConnectionErrorLabel = new System.Windows.Forms.Label();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.ControlletNameLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.ControllerName = new System.Windows.Forms.TextBox();
-            this.SessionNameLabel = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.ErrorLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -78,6 +79,7 @@ namespace microcontrollerSide
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
+            this.panel2.Controls.Add(this.ErrorLabel);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.SessionNameLabel);
             this.panel2.Controls.Add(this.ControllerName);
@@ -91,6 +93,32 @@ namespace microcontrollerSide
             this.panel2.Size = new System.Drawing.Size(867, 546);
             this.panel2.TabIndex = 0;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold);
+            this.label1.Location = new System.Drawing.Point(139, 182);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(131, 24);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Sessoin Name";
+            // 
+            // SessionNameLabel
+            // 
+            this.SessionNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.SessionNameLabel.Location = new System.Drawing.Point(300, 179);
+            this.SessionNameLabel.Name = "SessionNameLabel";
+            this.SessionNameLabel.Size = new System.Drawing.Size(207, 27);
+            this.SessionNameLabel.TabIndex = 8;
+            // 
+            // ControllerName
+            // 
+            this.ControllerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.ControllerName.Location = new System.Drawing.Point(300, 223);
+            this.ControllerName.Name = "ControllerName";
+            this.ControllerName.Size = new System.Drawing.Size(207, 27);
+            this.ControllerName.TabIndex = 7;
+            // 
             // ConnectionErrorLabel
             // 
             this.ConnectionErrorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -101,7 +129,6 @@ namespace microcontrollerSide
             this.ConnectionErrorLabel.Size = new System.Drawing.Size(41, 16);
             this.ConnectionErrorLabel.TabIndex = 5;
             this.ConnectionErrorLabel.Text = "  ____";
-            this.ConnectionErrorLabel.Click += new System.EventHandler(this.ConnectionErrorLabel_Click);
             // 
             // ConnectButton
             // 
@@ -133,7 +160,6 @@ namespace microcontrollerSide
             this.ControlletNameLabel.TabIndex = 2;
             this.ControlletNameLabel.Text = "Iderntifier";
             this.ControlletNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ControlletNameLabel.Click += new System.EventHandler(this.ControlletNameLabel_Click);
             // 
             // pictureBox1
             // 
@@ -148,33 +174,18 @@ namespace microcontrollerSide
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
             // 
-            // ControllerName
+            // ErrorLabel
             // 
-            this.ControllerName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.ControllerName.Location = new System.Drawing.Point(300, 223);
-            this.ControllerName.Name = "ControllerName";
-            this.ControllerName.Size = new System.Drawing.Size(207, 27);
-            this.ControllerName.TabIndex = 7;
+            this.ErrorLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.ErrorLabel.AutoSize = true;
+            this.ErrorLabel.Location = new System.Drawing.Point(297, 267);
+            this.ErrorLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ErrorLabel.Name = "ErrorLabel";
+            this.ErrorLabel.Size = new System.Drawing.Size(41, 16);
+            this.ErrorLabel.TabIndex = 10;
+            this.ErrorLabel.Text = "  ____";
             // 
-            // SessionNameLabel
-            // 
-            this.SessionNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.SessionNameLabel.Location = new System.Drawing.Point(300, 179);
-            this.SessionNameLabel.Name = "SessionNameLabel";
-            this.SessionNameLabel.Size = new System.Drawing.Size(207, 27);
-            this.SessionNameLabel.TabIndex = 8;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(139, 182);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 24);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Sessoin Name";
-            // 
-            // Form1
+            // InitionliseConnectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -182,10 +193,9 @@ namespace microcontrollerSide
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "Form1";
+            this.Name = "InitionliseConnectionForm";
             this.Text = "Initialization Connections";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InitionliseConnectionForm_FormClosing);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -206,6 +216,7 @@ namespace microcontrollerSide
         private System.Windows.Forms.TextBox SessionNameLabel;
         private System.Windows.Forms.TextBox ControllerName;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ErrorLabel;
     }
 }
 

@@ -20,11 +20,28 @@ namespace microcontrollerSide
         private static byte[] aesKeyServer;
         private static byte[] aesIVServer;
 
+        private static byte[] tempKey;
+        private static byte[] tempIv;
+
+
         public static void AddkeysForServer(byte[] key, byte[] Iv)
         {
             aesKeyServer = RsaEncryption.DecryptToByte(key);
             aesIVServer = RsaEncryption.DecryptToByte(Iv);
         }
+        public static void SetNewKeyAndIvForServer(string key, string iv)
+        {
+            byte[] Key = Convert.FromBase64String(key);
+            byte[] Iv = Convert.FromBase64String(iv);
+
+            if (key != null && Iv != null)
+            {
+                aesIVServer = Iv;
+                aesKeyServer = Key;
+            }
+        }
+
+
         public static void AddkeysForClient(byte[] key, byte[] Iv)
         {
             
@@ -34,13 +51,13 @@ namespace microcontrollerSide
             
             
             
-            //new Thread(ChengeIv).Start();
+            new Thread(ChengeIv).Start();
         }
         public static int GetRandomDelay()
         {
             Random _random = new Random();
             
-            return _random.Next(1000 * 60 * 1, 1000 * 60 * 2); // Random time between 3-min to 4-min (inclusive)
+            return _random.Next(1000 * 10, 1000 * 20); // Random time between 3-min to 4-min (inclusive)
         }
 
         public static void ChengeIv()
@@ -62,8 +79,8 @@ namespace microcontrollerSide
                 byte[] bytes = Encoding.UTF8.GetBytes("CHANGEIVANDKEY;").Concat(AESTempIV).Concat(AESTempKEY).ToArray();
 
                 MicroController.SendToClient(bytes);
-                aesIV = AESTempIV;
-                aesKey = AESTempKEY;
+                tempIv = AESTempIV;
+                tempKey = AESTempKEY;
             }
         }
 
@@ -89,7 +106,7 @@ namespace microcontrollerSide
                     }
 
                 }
-            } catch (Exception e) { }
+            } catch (Exception e) { MessageBox.Show($"{e.Message}"); }
 
             return null;
         }
@@ -122,9 +139,6 @@ namespace microcontrollerSide
 
             return null;
         }
-
-
-
 
 
         public static byte[] EncryptedDataForServer(byte[] data)
@@ -194,36 +208,15 @@ namespace microcontrollerSide
             }
         }
 
-
-
-
-
-
-        public static byte[] FileEn()
+        public static void KeysChangesSuccessfuly()
         {
-            byte[] data = File.ReadAllBytes("C:\\Users\\user\\Desktop\\2024-11-16.IBC_UNLIMITED.Faulty_Sites.xlsx");
-            if (aesKey == null || aesIV == null)
-                return null;
-            try
-            {
-                using (Aes aes = Aes.Create())
-                {
-                    aes.Key = aesKey;
-                    aes.IV = aesIV;
+            aesKey = tempKey;
+            aesIV = tempIv;
 
-                    ICryptoTransform encryptor = aes.CreateEncryptor();
-                    using (MemoryStream ms = new MemoryStream())
-                    using (CryptoStream Cry = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        Cry.Write(data, 0, data.Length);
-                        Cry.Close();
-                        return ms.ToArray();
-                    }
 
-                }
-            }
-            catch (Exception e) { }
-            return null;
+            tempIv = null;
+            tempKey = null;
+
         }
     }
 }

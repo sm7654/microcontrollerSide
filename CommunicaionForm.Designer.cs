@@ -51,49 +51,44 @@ namespace microcontrollerSide
             this.RoomCodeTxBox.AutoSize = true;
             this.RoomCodeTxBox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.RoomCodeTxBox.ForeColor = System.Drawing.Color.White;
-            this.RoomCodeTxBox.Location = new System.Drawing.Point(825, 12);
-            this.RoomCodeTxBox.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.RoomCodeTxBox.Location = new System.Drawing.Point(1099, 19);
             this.RoomCodeTxBox.Name = "RoomCodeTxBox";
-            this.RoomCodeTxBox.Size = new System.Drawing.Size(102, 21);
+            this.RoomCodeTxBox.Size = new System.Drawing.Size(125, 28);
             this.RoomCodeTxBox.TabIndex = 5;
             this.RoomCodeTxBox.Text = "Room Code:";
-            this.RoomCodeTxBox.Click += new System.EventHandler(this.RoomCodeTxBox_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.Controls.Add(this.DialogPanel);
-            this.panel1.Location = new System.Drawing.Point(42, 57);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Location = new System.Drawing.Point(47, 84);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(889, 406);
+            this.panel1.Size = new System.Drawing.Size(1185, 448);
             this.panel1.TabIndex = 8;
             // 
             // DialogPanel
             // 
             this.DialogPanel.AutoScroll = true;
-            this.DialogPanel.BackColor = System.Drawing.SystemColors.Window;
-            this.DialogPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.DialogPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DialogPanel.Location = new System.Drawing.Point(0, 0);
-            this.DialogPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DialogPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(253)))), ((int)(((byte)(253)))));
+            this.DialogPanel.Location = new System.Drawing.Point(3, 2);
+            this.DialogPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DialogPanel.Name = "DialogPanel";
-            this.DialogPanel.Padding = new System.Windows.Forms.Padding(19, 6, 6, 6);
-            this.DialogPanel.Size = new System.Drawing.Size(889, 406);
+            this.DialogPanel.Padding = new System.Windows.Forms.Padding(25, 7, 8, 7);
+            this.DialogPanel.Size = new System.Drawing.Size(1185, 446);
             this.DialogPanel.TabIndex = 0;
             // 
             // Header
             // 
-            this.Header.BackColor = System.Drawing.Color.Transparent;
+            this.Header.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.Header.Controls.Add(this.Idendifeir);
             this.Header.Controls.Add(this.RoomCodeTxBox);
             this.Header.Dock = System.Windows.Forms.DockStyle.Top;
             this.Header.Location = new System.Drawing.Point(0, 0);
-            this.Header.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Header.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Header.Name = "Header";
-            this.Header.Size = new System.Drawing.Size(960, 41);
+            this.Header.Size = new System.Drawing.Size(1280, 66);
             this.Header.TabIndex = 9;
-            this.Header.Paint += new System.Windows.Forms.PaintEventHandler(this.set_background);
             // 
             // Idendifeir
             // 
@@ -101,30 +96,30 @@ namespace microcontrollerSide
             this.Idendifeir.BackColor = System.Drawing.Color.Transparent;
             this.Idendifeir.Font = new System.Drawing.Font("Segoe UI", 14F);
             this.Idendifeir.ForeColor = System.Drawing.Color.White;
-            this.Idendifeir.Location = new System.Drawing.Point(38, 9);
-            this.Idendifeir.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Idendifeir.Location = new System.Drawing.Point(41, 15);
             this.Idendifeir.Name = "Idendifeir";
-            this.Idendifeir.Size = new System.Drawing.Size(118, 25);
+            this.Idendifeir.Size = new System.Drawing.Size(150, 32);
             this.Idendifeir.TabIndex = 0;
             this.Idendifeir.Text = "CellRoom #9";
             // 
             // Background
             // 
             this.Background.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Background.Controls.Add(this.panel1);
             this.Background.Controls.Add(this.button1);
             this.Background.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Background.Location = new System.Drawing.Point(0, 0);
-            this.Background.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Background.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Background.Name = "Background";
-            this.Background.Size = new System.Drawing.Size(960, 527);
+            this.Background.Size = new System.Drawing.Size(1280, 649);
             this.Background.TabIndex = 10;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(675, 499);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Location = new System.Drawing.Point(900, 614);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(56, 19);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -132,19 +127,18 @@ namespace microcontrollerSide
             // 
             // CommunicaionForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(960, 527);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(1280, 649);
             this.Controls.Add(this.Header);
             this.Controls.Add(this.Background);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "CommunicaionForm";
             this.Text = "CommunicaionForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CommunicaionForm_FormClosing);
-            this.Load += new System.EventHandler(this.CommunicaionForm_Load);
+            
             this.panel1.ResumeLayout(false);
             this.Header.ResumeLayout(false);
             this.Header.PerformLayout();
@@ -171,21 +165,7 @@ namespace microcontrollerSide
 
 
 
-        private void set_background(object sender, PaintEventArgs e)
-        {
-            // Get the graphics object
-            Graphics graphics = e.Graphics;
-
-            // Create a rectangle that fills the entire form
-            Rectangle gradientRectangle = new Rectangle(0, 0, Width, Height);
-
-            // Create the gradient brush: from dark red to orange-red (professional colors for blocking or warning)
-            Brush brush = new LinearGradientBrush(gradientRectangle, Color.FromArgb(20, 40, 60), Color.FromArgb(100, 180, 220), 45f);
-
-
-            // Fill the rectangle with the gradient
-            graphics.FillRectangle(brush, gradientRectangle);
-        }
+        
 
         private Button button1;
 
