@@ -25,20 +25,20 @@ namespace microcontrollerSide
 
         public static string Decrypt(byte[] data)
         {
-            byte[] bytes = Service.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+            byte[] bytes = Service.Decrypt(data, RSAEncryptionPadding.OaepSHA1);
             return Encoding.UTF8.GetString(bytes);
         }
         public static byte[] DecryptToByte(byte[] data)
         {
             
-            return Service.Decrypt(data, RSAEncryptionPadding.Pkcs1);
+            return Service.Decrypt(data, RSAEncryptionPadding.OaepSHA1);
         }
 
         public static byte[] EncryptToServer(byte[] data)
         {
             using (RSA rsa = RSA.Create()) {
                 rsa.FromXmlString(ServerPublickey);
-                return rsa.Encrypt(data, RSAEncryptionPadding.Pkcs1);
+                return rsa.Encrypt(data, RSAEncryptionPadding.OaepSHA1);
             }
 
             

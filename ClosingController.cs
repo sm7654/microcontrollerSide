@@ -7,7 +7,7 @@ namespace ServerSide
     {
         public static void btnExit_Click()
         {
-            PipeStream.WriteToPipe("shut;");
+            ConnectionToElectronics.SendData("Kill;");
             Environment.Exit(0);
             
         }

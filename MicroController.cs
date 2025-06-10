@@ -23,12 +23,15 @@ namespace microcontrollerSide
         private static CommunicaionForm UI;
         private static byte[] ServerRole = Encoding.UTF8.GetBytes("%%ServerRelatedMessage%%");
         private static bool clientConnected = false;
+        private static bool ConnectedToServer = false;
         private static object communicationLock = new object();
+        private static string ExperName = "";
 
        
         public static void SetMicroController(Socket controllerSock)
         {
             controller = controllerSock;
+            ConnectedToServer = true;
             new Thread(ListenTo200Code).Start();  
             new Thread(KeepConnectionAlive).Start();
         }
@@ -94,8 +97,11 @@ namespace microcontrollerSide
                     Control.SetRemoteEndPoint("");
 
                     UI.GetDialogPanel().Controls.Add(Control);
+                    ConnectedToServer = false;
 
                 }));
+
+                return;
             }
             catch (Exception e) { MessageBox.Show("\n\n\n\n\n\n\nhello"); }
         }
@@ -135,7 +141,8 @@ namespace microcontrollerSide
 
         private static void ListenTo200Code()
         {
-
+            if (!ConnectedToServer)
+                return;
             while (true)
             {
                 try
@@ -171,9 +178,10 @@ namespace microcontrollerSide
                         Control.SetRemoteEndPoint("");
 
                         UI.GetDialogPanel().Controls.Add(Control);
-
+                        ConnectedToServer = false;
+                        
                     }));
-                    break;
+                    return;
                 }
                 catch (Exception ex) {  }
             }
@@ -282,10 +290,10 @@ namespace microcontrollerSide
                 {
                     case "NEWXPERIMENT":
 
-                        SendToPipeNewExperiment(message);
+                        SendToElectNewExperiment(message);
                         UserStatus Control = new UserStatus("New Expreriment");
                         Control.SetDetails($"Name: {message[1]}      Frequency: {message[2]}      Duration: {message[3]}");
-
+                        SendToClient($"GotExper;{message[3]}");
 
                         UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
                         
@@ -300,18 +308,17 @@ namespace microcontrollerSide
                         UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
 
 
-                        PipeStream.WriteToPipe(message[0]);
+                        ConnectionToElectronics.SendData(message[0]);
                         break;
                     default: break;
                 } 
             }
             catch (Exception e) 
             {
-                MessageBox.Show($"error \n {e.Message}");
             }
         }
 
-        public static void SendToPipeNewExperiment(string[] experimentString)
+        public static void SendToElectNewExperiment(string[] experimentString)
         {
 
             if (!(experimentString.Length > 0))
@@ -321,12 +328,9 @@ namespace microcontrollerSide
                 string experName = experimentString[1]; // Fxperiment name
                 string Frequency = experimentString[2]; // Frequency of engine
                 string Duration = experimentString[3];
-                Console.WriteLine($"{experName}{Frequency}");
-                //form.GetCLientStatusLabel().Text = $"{experName}: {Frequency}";
-
-                PipeStream.WriteToPipe($"NEWXPERIMENT;{experName};{Frequency};{Duration}");
                 
-
+                ConnectionToElectronics.setExperName(experName);
+                ConnectionToElectronics.SendData($"NEWEXPER;{Frequency};{Duration}");
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); ; return; }
         }
@@ -354,7 +358,7 @@ namespace microcontrollerSide
 
 
 
-            string ExperResults = $"EXPERIMENT_RESULTS;Name:{randomFirstName}|;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;Duration:{time}|sec;Date:{curentTime}|";
+            string ExperResults = $"EXPERIMENT_RESULTS;BeforeAirSpeed:20|m/s;Name:{randomFirstName}|;DeltaSpeed:{deltaSpeed}|m/s;Temperature:{temp}|°C;Camera Speed:{cameraSpeed}|fps;Pressure:{innerPressure}|kPa;Humidity:{humidity}|%;Duration:{time}|sec;Date:{curentTime}|";
             Console.WriteLine(ExperResults);
             SendToClient(ExperResults);
 
@@ -373,7 +377,7 @@ namespace microcontrollerSide
             {
                 while (controller.Connected)
                 {
-                    SendToServer("&Ping;");
+                    SendToServer("&MicroPing;");
                     Thread.Sleep(500);
                 }
             }

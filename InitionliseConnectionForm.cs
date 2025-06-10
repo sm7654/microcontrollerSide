@@ -18,11 +18,12 @@ namespace microcontrollerSide
         {
             RsaEncryption.GenerateKeys();
             InitializeComponent();
-            /*if (!PipeStream.InitionlisePipe())
+            
+            if (!ConnectionToElectronics.Connect())
             {
-                ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
+                ConnectionErrorLabel.Text = "Could not connect to a Electronics.....";
                 return;
-            }*/
+            }
             new Thread(() =>
             {
                 (bool status, Socket Conn) = CreateConn();
@@ -58,14 +59,13 @@ namespace microcontrollerSide
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            /*if (!PipeStream.IsPipeConnected())
+            if (ConnectionToElectronics.WeConnectedToRoyAndNiv())
             {
-                ConnectionErrorLabel.Text = "Could not connect to a pipe.....";
-                //return;
-            }*/
+                ConnectionErrorLabel.Text = "Please restart the app. Connection to elect failed";
+            } 
             if (ControllerName.Text == "" ||  ControllerName.Text == SessionNameLabel.Text)
                 return;
-            ConnectionErrorLabel.Text = "Trying to connect the server.....";
+            ConnectionErrorLabel.Text = "Sending Data To Server.....";
             
             new Thread(() =>
             {
@@ -116,7 +116,7 @@ namespace microcontrollerSide
                     if (ConnToServer == null)
                         MessageBox.Show($"Null");
                     else if(SessionAndMicroName == null)
-                        MessageBox.Show("you are fucked");
+                        MessageBox.Show("SessionAndMicroName is null");
                 }
             }).Start();
             
@@ -130,7 +130,7 @@ namespace microcontrollerSide
 
                 Socket Conn = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 
-                IPEndPoint address = new IPEndPoint(IPAddress.Parse("10.0.0.6"), 65000);
+                IPEndPoint address = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 65000);
 
                 Conn.Connect(address);
 
@@ -143,10 +143,6 @@ namespace microcontrollerSide
 
 
 
-
-                //Conn.Receive(ServerpublicKey);
-                //Conn.Receive(ServerpublicKey);
-                // recive code
 
                 return (true, Conn);
             }

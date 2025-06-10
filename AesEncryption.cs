@@ -36,6 +36,7 @@ namespace microcontrollerSide
 
             if (key != null && Iv != null)
             {
+                MicroController.SendToServer("&MicroGotKeys;");
                 aesIVServer = Iv;
                 aesKeyServer = Key;
             }
@@ -44,7 +45,6 @@ namespace microcontrollerSide
 
         public static void AddkeysForClient(byte[] key, byte[] Iv)
         {
-            
             aesKey = RsaEncryption.DecryptToByte(key);
             aesIV = RsaEncryption.DecryptToByte(Iv);
             
@@ -57,7 +57,7 @@ namespace microcontrollerSide
         {
             Random _random = new Random();
             
-            return _random.Next(1000 * 10, 1000 * 20); // Random time between 3-min to 4-min (inclusive)
+            return _random.Next(1000 * 10, 1000 * 20); 
         }
 
         public static void ChengeIv()

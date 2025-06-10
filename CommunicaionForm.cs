@@ -40,5 +40,24 @@ namespace microcontrollerSide
             MicroController.MicroChipCommunication("shai");
         }
 
+        private void DialogPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ConnectionToElectronics.SendData("NEWEXPER;30;10");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ConnectionToElectronics.SendData("StopExper;");
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ConnectionToElectronics.Connect();
+        }
     }
 }
