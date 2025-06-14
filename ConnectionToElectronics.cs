@@ -19,8 +19,10 @@ namespace microcontrollerSide
         private static bool running = false;
 
         private static string ExperName = "";
+        private static bool experisrunning = false;
 
-        private static IPEndPoint sendEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 5010);
+
+        private static IPEndPoint sendEndPoint = new IPEndPoint(IPAddress.Parse("10.0.0.4"), 5010);
         private static IPEndPoint receiveEndPoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 5020);
 
 
@@ -28,25 +30,17 @@ namespace microcontrollerSide
         {
             try
             {
+                sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                sendSocket.Connect(sendEndPoint);
+
                 GetConnectionFromRS = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 GetConnectionFromRS.Bind(receiveEndPoint);
                 GetConnectionFromRS.Listen(1);
 
-                Console.WriteLine("tring to connect");
-                sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                sendSocket.Connect(sendEndPoint);
-
-                Console.WriteLine("Connected");
-
-
-    
                 receiveSocket = GetConnectionFromRS.Accept();
 
 
-                Console.WriteLine("Connected");
-
                 running = true;
-                MessageBox.Show($"starting listening\n{receiveSocket == null}");
                 new Thread(ReceiveData).Start();
 
                 return true;
@@ -68,7 +62,7 @@ namespace microcontrollerSide
                     if (received > 0)
                     {
                         string data = Encoding.UTF8.GetString(buffer, 0, received);
-                        Console.WriteLine($"Received: {data}");
+                        
                         MessageSelector(data);
                     }
                 }
@@ -83,24 +77,31 @@ namespace microcontrollerSide
         {
             try
             {
+                
                 byte[] buffer = Encoding.UTF8.GetBytes(data);
                 sendSocket.Send(buffer);
-                Console.WriteLine($"Sent: {data}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Send error: {ex.Message}");
+                MessageBox.Show("Error sending data");
             }
+        }
+        public static void StopExperiment()
+        {
+            experisrunning = false;
         }
         public static void setExperName(string name)
         {
             ExperName = name;
+            
+            experisrunning = true;
+
+            
         }
         private static void MessageSelector(string message)
         {
             try
             {
-                MessageBox.Show($"the messege is: {message}\nthe name is {ExperName}");
                 if (message.Split(';')[0] == "EXPERIMENT_RESULTS")
                 {
                     
@@ -112,6 +113,10 @@ namespace microcontrollerSide
                 {
                     MicroController.SendToClient($"GotExper;{message.Split(';')[1]}");
                 }
+                else if (message.Split(';')[0] == "TimeoutReached")
+                {
+                    experisrunning = false;
+                }
 
             } catch (Exception e) {
             
@@ -122,6 +127,8 @@ namespace microcontrollerSide
             return running;
         }
         
+        
+
 
     }
 }

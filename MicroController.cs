@@ -250,6 +250,7 @@ namespace microcontrollerSide
                 
                 if (bytes[1] == "302")
                 {
+                    ConnectionToElectronics.SendData("StopExper;");
                     clientConnected = false;
                     UserStatus userStatus = new UserStatus(false, $"Client disconnected;New Code - {bytes[2]}");
                     UI.BeginInvoke(new Action(() => { 
@@ -307,7 +308,7 @@ namespace microcontrollerSide
                         Control = new UserStatus("Experiment Stoped");
                         UI.BeginInvoke(new Action(() => { UI.GetDialogPanel().Controls.Add(Control); }));
 
-
+                        ConnectionToElectronics.StopExperiment();
                         ConnectionToElectronics.SendData(message[0]);
                         break;
                     default: break;
@@ -341,7 +342,7 @@ namespace microcontrollerSide
             Random random = new Random();
             string curentTime = dateOnly.ToString("yyyy-MM-dd");
             string deltaSpeed = random.Next(1, 100).ToString();
-            string temp = random.Next(-30, 50).ToString();
+            string temp = random.Next(-300, 50).ToString();
             string cameraSpeed = random.Next(1, 100).ToString();
             string innerPressure = random.Next(10, 100).ToString();
             string humidity = random.Next(0, 100).ToString();
